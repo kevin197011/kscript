@@ -1,9 +1,8 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require 'uri'
+require 'http'
 require 'json'
-require 'net/http'
 
 # class
 class IpApi
@@ -14,19 +13,26 @@ class IpApi
   end
 
   def run
-    exit 'Not a valid ip!' unless _validation?(@ip)
-    url = URI("http://ip-api.com/json/##{@ip}")
-    http = Net::HTTP.new(url.host, url.port)
-    request = Net::HTTP::Get.new(url)
-    response = http.request(request)
-    json_body = JSON.pretty_generate(JSON.parse(response.read_body))
-    puts json_body
+    exit 'Not a valid IP!' unless valid_ip?(@ip)
+    url = "http://ip-api.com/json/#{@ip}"
+
+    begin
+      response = HTTP.get(url)
+      if response.status.success?
+        json_body = JSON.pretty_generate(response.parse(:json))
+        puts json_body
+      else
+        puts "Failed to retrieve data: #{response.status}"
+      end
+    rescue HTTP::Error => e
+      puts "An error occurred: #{e.message}"
+    end
   end
 
   private
 
-  def _validation?(parms)
-    /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.match?(parms)
+  def valid_ip?(ip)
+    /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.match?(ip)
   end
 end
 

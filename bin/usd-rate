@@ -1,22 +1,27 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require 'uri'
+require 'http'
 require 'json'
-require 'net/http'
-require 'openssl'
 
 # class
 class USDRate
   def run
-    url = URI('https://api.exchangerate-api.com/v4/latest/usd')
-    http = Net::HTTP.new(url.host, url.port)
-    http.use_ssl = true
-    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-    request = Net::HTTP::Get.new(url)
-    response = http.request(request)
-    json_body = JSON.pretty_generate(JSON.parse(response.read_body))
-    puts json_body
+    url = 'https://api.exchangerate-api.com/v4/latest/USD'
+
+    begin
+      response = HTTP.get(url)
+
+      if response.status.success?
+        data = response.parse(:json)
+        json_body = JSON.pretty_generate(data)
+        puts json_body
+      else
+        puts "Failed to retrieve data: #{response.status}"
+      end
+    rescue HTTP::Error => e
+      puts "An error occurred: #{e.message}"
+    end
   end
 end
 
