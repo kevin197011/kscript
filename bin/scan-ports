@@ -1,0 +1,51 @@
+#!/usr/bin/env ruby
+
+# frozen_string_literal: true
+
+require 'socket'
+require 'timeout'
+
+# 封装端口扫描逻辑
+def scan(host, port)
+  Timeout.timeout(1) do # 设置连接超时为1秒
+    s = TCPSocket.new(host, port)
+    puts " [+] Port #{port} is open"
+    s.close
+  end
+rescue Timeout::Error
+  # 连接超时，忽略
+rescue Errno::ECONNREFUSED, Errno::EHOSTUNREACH, Errno::ETIMEDOUT
+  # 处理连接拒绝、主机不可达或连接超时的错误
+  # 这里可以选择不输出，或者输出调试信息
+rescue StandardError => e
+  # 捕获其它异常并打印
+  puts " [-] Error on port #{port}: #{e.message}"
+end
+
+# 使用线程池进行并行扫描
+def scan_ports_concurrently(host, ports, thread_count = 100)
+  # 分割端口范围，分配给多个线程
+  queue = Queue.new
+  ports.each { |port| queue.push(port) }
+
+  # 使用指定数量的线程并发执行
+  threads = []
+  thread_count.times do
+    threads << Thread.new do
+      until queue.empty?
+        port = queue.pop
+        scan(host, port)
+      end
+    end
+  end
+
+  # 等待所有线程执行完成
+  threads.each(&:join)
+end
+
+# 使用示例
+host = '172.16.1.100'
+ports = (1..65_535).to_a
+
+# 并发扫描端口
+scan_ports_concurrently(host, ports)

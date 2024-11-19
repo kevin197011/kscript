@@ -32,7 +32,7 @@ end
 task :package do
   Dir.glob("#{app_name}*tar.gz").each { |file| File.delete(file) }
   system "tar zcf #{app_name}_#{app_version}.tar.gz #{app_name}"
-  puts "Update app tgz [#{app_name}_#{app_version}.tar.gz] succeed!"
+  Rails.logger.debug { "Update app tgz [#{app_name}_#{app_version}.tar.gz] succeed!" }
 end
 
 task :info do
