@@ -3,13 +3,11 @@
 
 require 'http'
 require 'json'
-require 'dotenv'
 require 'securerandom'
 
 # Class to interact with Kibana
 class KibanaUtils
   def initialize(project_name, project_env, base_url, username, password)
-    Dotenv.load
     @base_url = base_url
     @username = username
     @password = password
