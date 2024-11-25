@@ -1,17 +1,17 @@
-#!/usr/bin/env ruby
 # frozen_string_literal: true
 
 require 'http'
 require 'json'
+require 'dotenv'
 require 'securerandom'
 
 # Class to interact with Kibana
 class KibanaUtils
-  BASE_URL = 'https://kibana.devops.io'
-  USERNAME = 'elastic'
-  PASSWORD = 'xxxxxxxx'
-
-  def initialize(project_name, project_env)
+  def initialize(project_name, project_env, base_url, username, password)
+    Dotenv.load
+    @base_url = base_url
+    @username = username
+    @password = password
     @project_name = project_name
     @project_env = project_env
     @space_name = "#{project_name}-#{project_env}"
@@ -19,19 +19,35 @@ class KibanaUtils
 
   # Return the HTTP client with authentication
   def client
-    @client ||= HTTP.basic_auth(user: USERNAME, pass: PASSWORD)
+    @client ||= HTTP.basic_auth(user: @username, pass: @password)
   end
 
   # Fetch all indices from Kibana
   def indices
-    response = client.get("#{BASE_URL}/api/index_management/indices", headers: kbn_headers)
+    response = client.get("#{@base_url}/api/index_management/indices", headers: kbn_headers)
     handle_response(response) { |body| JSON.parse(body).map { |item| item['name'] } }
+  end
+
+  # Delete space all index
+  def delete_dataviews
+    url = "#{@base_url}/s/#{@space_name}/api/content_management/rpc/delete"
+    get_dataviews.each do |index|
+      body = {
+        'contentTypeId' => 'index-pattern',
+        'id' => index['id'],
+        'options' => {
+          'force' => true
+        },
+        'version' => 1
+      }
+      client.post(url, json: body, headers: kbn_headers)
+    end
   end
 
   # Add a new index to Kibana
   def add_index(index_name)
     uuid = SecureRandom.uuid
-    url = "#{BASE_URL}/s/#{@space_name}/api/content_management/rpc/create"
+    url = "#{@base_url}/s/#{@space_name}/api/content_management/rpc/create"
     body = index_body(index_name, uuid)
 
     response = client.post(url, json: body, headers: kbn_headers)
@@ -44,6 +60,7 @@ class KibanaUtils
 
   # Add all relevant indices to Kibana
   def add_all_index
+    delete_dataviews
     indices.each do |index|
       unless index =~ /#{@project_name}/i && index =~ /#{@project_env}/i && index =~ /#{Time.now.strftime('%Y.%m.%d')}/
         next
@@ -54,6 +71,19 @@ class KibanaUtils
   end
 
   private
+
+  # Fetch all index id
+  def get_dataviews
+    url = "#{@base_url}/s/#{@space_name}/api/content_management/rpc/search"
+    # Data payload
+    body = {
+      'contentTypeId' => 'index-pattern',
+      'query' => { 'limit' => 10_000 },
+      'options' => { 'fields' => %w[title type typeMeta name] },
+      'version' => 1
+    }
+    JSON.parse(client.post(url, json: body, headers: kbn_headers))['result']['result']['hits']
+  end
 
   # Construct the body for creating an index
   def index_body(index_name, uuid)
@@ -103,11 +133,3 @@ class KibanaUtils
   end
 end
 
-if __FILE__ == $PROGRAM_NAME
-  # Usage
-  project_name = 'a100'
-  project_env = 'prod'
-
-  k = KibanaUtils.new(project_name, project_env)
-  k.add_all_index
-end
