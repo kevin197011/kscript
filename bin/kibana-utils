@@ -1,3 +1,4 @@
+#!/usr/bin/env ruby
 # frozen_string_literal: true
 
 require 'http'
@@ -132,4 +133,3 @@ class KibanaUtils
     end
   end
 end
-
