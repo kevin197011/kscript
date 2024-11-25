@@ -1,4 +1,3 @@
-#!/usr/bin/env ruby
 # frozen_string_literal: true
 
 require 'http'
@@ -67,6 +66,46 @@ class KibanaUtils
 
       add_index(index.gsub(/-\d{4}\.\d{2}\.\d{2}/, ''))
     end
+  end
+
+  def create_role
+    url = "#{@base_url}/api/security/role/#{@project_name}?createOnly=true"
+    request_body = {
+      'elasticsearch' => {
+        'cluster' => [],
+        'indices' => [
+          {
+            'names' => ["*#{@project_name}*"],
+            'privileges' => ['read']
+          }
+        ],
+        'run_as' => []
+      },
+      'kibana' => [
+        {
+          'spaces' => ["#{@project_name}-prod", "#{@project_name}-uat"],
+          'base' => [],
+          'feature' => {
+            'discover' => ['read']
+          }
+        }
+      ]
+    }.to_json
+    client.put(url, body: request_body, headers: kbn_headers)
+    puts "Create #{@project_name} user role sucessed!"
+  end
+
+  def create_user
+    url = "#{@base_url}/internal/security/users/#{@project_name}"
+    request_body = {
+      'password' => '123456',
+      'username' => @project_name,
+      'full_name' => @project_name,
+      'email' => "#{@project_name}@devops.io",
+      'roles' => [@project_name]
+    }.to_json
+    client.post(url, body: request_body, headers: kbn_headers)
+    puts "Create #{@project_name} user sucessed!"
   end
 
   private
