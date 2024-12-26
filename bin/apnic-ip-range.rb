@@ -53,8 +53,10 @@ class ApnicIPRange
   end
 end
 
-# 使用示例：
-apnic = ApnicIPRange.new('CN')
-apnic.parse_ip_ranges.each do |cidr|
-  puts cidr
+if __FILE__ == $PROGRAM_NAME
+  # 使用示例：
+  apnic = ApnicIPRange.new('CN')
+  apnic.parse_ip_ranges.each do |cidr|
+    puts cidr
+  end
 end
