@@ -17,12 +17,12 @@ class ShellHelper
     begin
       response = HTTP.get(url)
       if response.status.success?
-        Rails.logger.debug response.body
+        puts response.body
       else
-        Rails.logger.debug { "Failed to retrieve data: #{response.status}" }
+        puts "Failed to retrieve data: #{response.status}"
       end
     rescue HTTP::Error => e
-      Rails.logger.debug { "An error occurred: #{e.message}" }
+      puts "An error occurred: #{e.message}"
     end
   end
 end
