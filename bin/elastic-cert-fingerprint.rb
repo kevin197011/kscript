@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'openssl'
 
 cert_path = 'elasticsearch.crt'
