@@ -45,27 +45,58 @@ end
 # Check if the device exists
 fail_exit("Device #{DEVICE} does not exist") unless File.blockdev?(DEVICE)
 
-# Create physical volume, volume group, and logical volume
-run("pvcreate #{DEVICE}")
-run("vgcreate #{VG_NAME} #{DEVICE}")
-run("lvcreate -l 100%FREE -n #{LV_NAME} #{VG_NAME}")
+# Check if device is already a physical volume
+if `pvs #{DEVICE} 2>/dev/null`.include?(DEVICE)
+  puts "⚠️ Device #{DEVICE} is already a physical volume. Skipping pvcreate."
+else
+  run("pvcreate #{DEVICE}")
+end
 
-# Format the logical volume with XFS
-run("mkfs.xfs /dev/#{VG_NAME}/#{LV_NAME}")
+# Check if volume group exists
+if `vgs #{VG_NAME} 2>/dev/null`.include?(VG_NAME)
+  puts "⚠️ Volume group #{VG_NAME} already exists. Skipping vgcreate."
+else
+  run("vgcreate #{VG_NAME} #{DEVICE}")
+end
+
+# Check if logical volume exists
+if `lvs /dev/#{VG_NAME}/#{LV_NAME} 2>/dev/null`.include?(LV_NAME)
+  puts "⚠️ Logical volume #{LV_NAME} already exists. Skipping lvcreate."
+else
+  run("lvcreate -l 100%FREE -n #{LV_NAME} #{VG_NAME}")
+end
+
+LV_PATH = "/dev/#{VG_NAME}/#{LV_NAME}".freeze
+
+# Check if LV already has a filesystem
+if `blkid #{LV_PATH}` =~ /TYPE="xfs"/
+  puts '⚠️ Logical volume already formatted. Skipping mkfs.'
+else
+  run("mkfs.xfs #{LV_PATH}")
+end
 
 # Create the mount point directory
 run("mkdir -p #{MOUNT_POINT}")
 
-# Mount the logical volume
-run("mount /dev/#{VG_NAME}/#{LV_NAME} #{MOUNT_POINT}")
+# Check if already mounted
+if `mount | grep #{MOUNT_POINT}`.include?(MOUNT_POINT)
+  puts "⚠️ #{MOUNT_POINT} is already mounted. Skipping mount."
+else
+  run("mount #{LV_PATH} #{MOUNT_POINT}")
+end
 
-# Get UUID and append to /etc/fstab for persistent mount
-uuid = `blkid -s UUID -o value /dev/#{VG_NAME}/#{LV_NAME}`.strip
+# Get UUID and ensure fstab entry exists
+uuid = `blkid -s UUID -o value #{LV_PATH}`.strip
 fail_exit('Failed to get UUID') if uuid.empty?
 
-puts '👉 Writing to /etc/fstab...'
-fstab_line = "UUID=#{uuid}  #{MOUNT_POINT}  xfs  defaults  0  0\n"
-File.open('/etc/fstab', 'a') { |f| f.write(fstab_line) }
+fstab_line = "UUID=#{uuid}  #{MOUNT_POINT}  xfs  defaults  0  0"
+
+if File.read('/etc/fstab').include?(uuid)
+  puts '⚠️ UUID already in /etc/fstab. Skipping fstab update.'
+else
+  puts '👉 Writing to /etc/fstab...'
+  File.open('/etc/fstab', 'a') { |f| f.puts(fstab_line) }
+end
 
 # Show disk usage
 puts "✅ Mounted successfully at #{MOUNT_POINT}:"
