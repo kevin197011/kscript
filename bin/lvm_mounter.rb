@@ -83,7 +83,7 @@ class LvmMounter
 
   # Update /etc/fstab for persistent mounting
   def update_fstab
-    uuid = get_volume_uuid
+    uuid = volume_uuid
     fstab_line = generate_fstab_entry(uuid)
 
     return if fstab_contains_uuid?(uuid)
@@ -153,7 +153,7 @@ class LvmMounter
     "/dev/#{config[:volume_group]}/#{config[:logical_volume]}"
   end
 
-  def get_volume_uuid
+  def volume_uuid
     uuid = `blkid -s UUID -o value #{logical_volume_path}`.strip
     fail_with_error('Failed to get UUID') if uuid.empty?
     uuid
