@@ -1,9 +1,10 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
-DEVICE = "/dev/sdb"
-VG_NAME = "vg_data"
-LV_NAME = "lv_data"
-MOUNT_POINT = "/data"
+DEVICE = '/dev/sdb'
+VG_NAME = 'vg_data'
+LV_NAME = 'lv_data'
+MOUNT_POINT = '/data'
 
 def fail_exit(msg)
   puts "❌ #{msg}"
@@ -17,27 +18,27 @@ def run(cmd)
 end
 
 def os_family
-  content = File.read("/etc/os-release")
+  content = File.read('/etc/os-release')
   if content =~ /ID_LIKE=.*rhel|centos|fedora/i || content =~ /ID=.*(rhel|centos|rocky|alma|fedora)/i
-    "redhat"
+    'redhat'
   elsif content =~ /ID_LIKE=.*debian/i || content =~ /ID=.*(debian|ubuntu)/i
-    "debian"
+    'debian'
   else
-    "unknown"
+    'unknown'
   end
 end
 
 # Detect OS and install lvm2 if not found
-unless system("which pvcreate > /dev/null 2>&1")
-  puts "🔧 lvm2 not found, installing..."
+unless system('which pvcreate > /dev/null 2>&1')
+  puts '🔧 lvm2 not found, installing...'
 
   case os_family
-  when "redhat"
-    run("yum install -y lvm2")
-  when "debian"
-    run("apt update && apt install -y lvm2")
+  when 'redhat'
+    run('yum install -y lvm2')
+  when 'debian'
+    run('apt update && apt install -y lvm2')
   else
-    fail_exit("Unsupported OS: cannot install lvm2")
+    fail_exit('Unsupported OS: cannot install lvm2')
   end
 end
 
@@ -60,11 +61,11 @@ run("mount /dev/#{VG_NAME}/#{LV_NAME} #{MOUNT_POINT}")
 
 # Get UUID and append to /etc/fstab for persistent mount
 uuid = `blkid -s UUID -o value /dev/#{VG_NAME}/#{LV_NAME}`.strip
-fail_exit("Failed to get UUID") if uuid.empty?
+fail_exit('Failed to get UUID') if uuid.empty?
 
-puts "👉 Writing to /etc/fstab..."
+puts '👉 Writing to /etc/fstab...'
 fstab_line = "UUID=#{uuid}  #{MOUNT_POINT}  xfs  defaults  0  0\n"
-File.open("/etc/fstab", "a") { |f| f.write(fstab_line) }
+File.open('/etc/fstab', 'a') { |f| f.write(fstab_line) }
 
 # Show disk usage
 puts "✅ Mounted successfully at #{MOUNT_POINT}:"

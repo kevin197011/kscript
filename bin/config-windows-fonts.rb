@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'win32/registry'
 require 'fileutils'
 require 'open-uri'
