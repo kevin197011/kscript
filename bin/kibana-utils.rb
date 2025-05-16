@@ -170,3 +170,20 @@ class KibanaUtils
     end
   end
 end
+
+if __FILE__ == $PROGRAM_NAME
+  # Example usage
+  project_name = 'example_project'
+  project_env = 'dev'
+  base_url = 'http://localhost:5601'
+  username = 'elastic'
+  password = 'password'
+  # Initialize KibanaUtils with project name, environment, and base URL
+  kibana_utils = KibanaUtils.new(project_name, project_env, base_url, username, password)
+  # Add all indices to Kibana
+  kibana_utils.add_all_index
+  # Create a role for the project
+  kibana_utils.create_role
+  # Create a user for the project
+  kibana_utils.create_user
+end

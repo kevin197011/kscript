@@ -4,59 +4,72 @@
 require 'http'
 require 'json'
 
-# Class for interacting with the Ip-Api service to retrieve geolocation data based on an IP address.
-class IpApi
-  attr_accessor :ip
+# Class for retrieving geolocation data from IP-API service
+class IpGeolocation
+  IP_API_BASE_URL = 'http://ip-api.com/json'
+  attr_reader :ip_address
 
-  # Initialize with the given IP address.
-  def initialize(ip)
-    @ip = ip
+  # Initialize with target IP address
+  # @param ip_address [String] IP address to lookup
+  def initialize(ip_address)
+    @ip_address = ip_address
   end
 
-  # Run the process to fetch and display geolocation data for the provided IP.
-  def run
-    # Validate the IP address format before making the request.
-    unless valid_ip?(@ip)
-      puts 'Not a valid IP address!'
-      exit 1
-    end
+  # Fetch and display geolocation data
+  def fetch_location
+    validate_ip_address!
 
-    url = "http://ip-api.com/json/#{@ip}"
-
-    begin
-      # Make the HTTP request to the IP API service.
-      response = HTTP.get(url)
-
-      # Handle the success or failure of the response.
-      if response.status.success?
-        # Pretty print the JSON response for easier readability.
-        json_body = JSON.pretty_generate(response.parse(:json))
-        puts json_body
-      else
-        puts "Failed to retrieve data: #{response.status}"
-      end
-    rescue HTTP::Error => e
-      # Print the error if an HTTP error occurs.
-      puts "An error occurred: #{e.message}"
-    end
+    response = make_api_request
+    handle_response(response)
+  rescue StandardError => e
+    puts "Error: #{e.message}"
+    exit 1
   end
 
   private
 
-  # Validate the IP address using a regex pattern.
-  def valid_ip?(ip)
-    /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.match?(ip)
+  # Validate IP address format
+  # @raise [ArgumentError] if IP address is invalid
+  def validate_ip_address!
+    return if valid_ip_format?
+
+    raise ArgumentError, 'Invalid IP address format'
+  end
+
+  # Check if IP address matches expected format
+  # @return [Boolean] true if format is valid
+  def valid_ip_format?
+    /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.match?(@ip_address)
+  end
+
+  # Make HTTP request to IP-API service
+  # @return [HTTP::Response] API response
+  def make_api_request
+    HTTP.get("#{IP_API_BASE_URL}/#{@ip_address}")
+  end
+
+  # Handle API response and display results
+  # @param response [HTTP::Response] API response to process
+  def handle_response(response)
+    if response.status.success?
+      display_results(response.parse(:json))
+    else
+      puts "API request failed: #{response.status}"
+    end
+  end
+
+  # Format and display geolocation results
+  # @param data [Hash] parsed JSON response
+  def display_results(data)
+    puts JSON.pretty_generate(data)
   end
 end
 
-# Execute the script if it's invoked directly from the command line.
 if __FILE__ == $PROGRAM_NAME
-  # Ensure that exactly one argument (IP address) is provided.
-  if ARGV.length != 1
-    puts "Usage: ruby #{$PROGRAM_NAME} <IP_ADDRESS>"
+  if ARGV.empty?
+    puts "Usage: #{$PROGRAM_NAME} <IP_ADDRESS>"
     exit 1
   end
 
-  # Instantiate and run the IpApi class with the provided IP address.
-  IpApi.new(ARGV[0]).run
+  IpGeolocation.new(ARGV[0]).fetch_location
 end

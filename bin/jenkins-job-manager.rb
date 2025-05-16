@@ -107,9 +107,10 @@ class JenkinsJobManager
   end
 end
 
-jenkins_url = 'https://jenkins.devops.io'
-user = 'kk'
-password = 'xxxxxxxxxxxxxxxxxxxxxxxx' # Jenkins API Token Or password
-manager = JenkinsJobManager.new(jenkins_url, user, password)
-
-manager.export_all_jobs
+if __FILE__ == $PROGRAM_NAME
+  jenkins_url = 'https://jenkins.devops.io'
+  user = 'kk'
+  password = 'xxxxxxxxxxxxxxxxxxxxxxxx' # Jenkins API Token Or password
+  manager = JenkinsJobManager.new(jenkins_url, user, password)
+  manager.export_all_jobs
+end

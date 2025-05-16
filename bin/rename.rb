@@ -1,46 +1,76 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-# This script batch renames files in the current directory based on the given regular expressions.
-# Usage example: `ruby rename.rb '_\.(.*)' '$1'`
-# This would remove underscores from the file names.
+# Class for batch renaming files using regular expressions
+class FileRenamer
+  attr_reader :source_pattern, :target_pattern, :directory
 
-class Rename
-  attr_accessor :src_re, :dst_re, :current_dir
-
-  # Initialize with the source regex (src_re) and destination regex (dst_re).
-  # current_dir defaults to the current working directory.
-  def initialize(src_re, dst_re)
-    @src_re = src_re
-    @dst_re = dst_re
-    @current_dir = Dir.pwd
+  # Initialize the renamer with patterns
+  # @param source_pattern [String] regex pattern to match source filenames
+  # @param target_pattern [String] regex pattern for new filenames
+  # @param directory [String] directory to process
+  def initialize(source_pattern, target_pattern, directory = Dir.pwd)
+    @source_pattern = source_pattern
+    @target_pattern = target_pattern
+    @directory = directory
   end
 
-  # Run the renaming process.
-  def run
-    # Iterate through all files in the current directory.
-    Dir.entries(@current_dir).each do |file|
-      # Skip if it's not a file (directories and special entries).
-      next unless File.file?(file)
-
-      # Rename the file if it matches the source regex (src_re).
-      next unless file =~ /#{@src_re}/
-
-      new_name = eval(@dst_re) # Evaluate the destination regex.
-      File.rename(file, new_name) # Rename the file.
-      puts "Renamed: #{file} -> #{new_name}" # Output the change.
+  # Execute the batch rename operation
+  def rename
+    Dir.entries(directory).each do |filename|
+      process_file(filename)
     end
+  end
+
+  private
+
+  # Process a single file for renaming
+  # @param filename [String] name of file to process
+  def process_file(filename)
+    return unless should_process?(filename)
+
+    new_name = generate_new_name(filename)
+    return unless new_name
+
+    rename_file(filename, new_name)
+  end
+
+  # Check if file should be processed
+  # @param filename [String] name of file to check
+  # @return [Boolean] true if file should be processed
+  def should_process?(filename)
+    File.file?(filename) && filename =~ /#{source_pattern}/
+  end
+
+  # Generate new filename using pattern
+  # @param filename [String] original filename
+  # @return [String] new filename
+  def generate_new_name(filename)
+    # Using eval is required here for complex regex replacements
+    # rubocop:disable Security/Eval
+    eval("\"#{filename}\"".gsub(/#{source_pattern}/, target_pattern))
+    # rubocop:enable Security/Eval
+  rescue StandardError => e
+    puts "Error processing #{filename}: #{e.message}"
+    nil
+  end
+
+  # Perform the actual file rename
+  # @param old_name [String] current filename
+  # @param new_name [String] new filename
+  def rename_file(old_name, new_name)
+    File.rename(old_name, new_name)
+    puts "Renamed: #{old_name} -> #{new_name}"
+  rescue StandardError => e
+    puts "Error renaming #{old_name}: #{e.message}"
   end
 end
 
-# Run the script if invoked from the command line.
 if __FILE__ == $PROGRAM_NAME
-  # Ensure there are exactly two arguments: source and destination regex.
   if ARGV.length != 2
-    puts "Usage: ruby #{$PROGRAM_NAME} '<src_re>' '<dst_re>'"
+    puts "Usage: #{$PROGRAM_NAME} '<source_pattern>' '<target_pattern>'"
     exit 1
   end
 
-  # Instantiate the Rename class and run the renaming process.
-  Rename.new(ARGV[0], ARGV[1]).run
+  FileRenamer.new(ARGV[0], ARGV[1]).rename
 end
