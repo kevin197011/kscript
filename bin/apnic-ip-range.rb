@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+# curl to execute this script:
+# curl -sSL https://raw.githubusercontent.com/kevin197011/kscript/main/bin/apnic-ip-range.rb | ruby
+
 require 'http'
 require 'uri'
 

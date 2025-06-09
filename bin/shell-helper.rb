@@ -1,6 +1,9 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
+# curl to execute this script:
+# curl -sSL https://raw.githubusercontent.com/kevin197011/kscript/main/bin/shell-helper.rb | ruby
+
 require 'http'
 
 # Class for fetching shell command documentation from cht.sh

@@ -1,6 +1,9 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
+# curl to execute this script:
+# curl -sSL https://raw.githubusercontent.com/kevin197011/kscript/main/bin/rename.rb | ruby
+
 # Class for batch renaming files using regular expressions
 class FileRenamer
   attr_reader :source_pattern, :target_pattern, :directory

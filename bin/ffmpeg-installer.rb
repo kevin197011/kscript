@@ -1,6 +1,9 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
+# curl to execute this script:
+# curl -sSL https://raw.githubusercontent.com/kevin197011/kscript/main/bin/ffmpeg-installer.rb | ruby
+
 # Class for installing FFmpeg on various Linux distributions
 class FfmpegInstaller
   # Initialize the installer

@@ -1,6 +1,9 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
+# curl to execute this script:
+# curl -sSL https://raw.githubusercontent.com/kevin197011/kscript/main/bin/windows-font-enhancer.rb | ruby
+
 require 'win32/registry'
 require 'fileutils'
 require 'open-uri'

@@ -1,6 +1,9 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
+# curl to execute this script:
+# curl -sSL https://raw.githubusercontent.com/kevin197011/kscript/main/bin/elastic-cert-fingerprint.rb | ruby
+
 require 'openssl'
 
 # Class for generating SHA256 fingerprint of Elasticsearch certificates

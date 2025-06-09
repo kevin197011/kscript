@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+# curl to execute this script:
+# curl -sSL https://raw.githubusercontent.com/kevin197011/kscript/main/bin/kibana-utils.rb | ruby
+
 require 'http'
 require 'json'
 require 'securerandom'
