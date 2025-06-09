@@ -10,12 +10,14 @@ require 'json'
 # Class for retrieving geolocation data from IP-API service
 class IpGeolocation
   IP_API_BASE_URL = 'http://ip-api.com/json'
+  IP_CHECK_URL = 'https://api.ipify.org?format=json'
+
   attr_reader :ip_address
 
-  # Initialize with target IP address
-  # @param ip_address [String] IP address to lookup
-  def initialize(ip_address)
-    @ip_address = ip_address
+  # Initialize with target IP address or get public IP
+  # @param ip_address [String, nil] IP address to lookup, nil for auto-detect
+  def initialize(ip_address = nil)
+    @ip_address = ip_address || fetch_public_ip
   end
 
   # Fetch and display geolocation data
@@ -30,6 +32,20 @@ class IpGeolocation
   end
 
   private
+
+  # Fetch public IP address of the current machine
+  # @return [String] public IP address
+  def fetch_public_ip
+    response = HTTP.get(IP_CHECK_URL)
+    raise "Failed to detect public IP: #{response.status}" unless response.status.success?
+
+    data = JSON.parse(response.body.to_s)
+    puts "Detected public IP: #{data['ip']}"
+    data['ip']
+  rescue StandardError => e
+    puts "Error detecting public IP: #{e.message}"
+    exit 1
+  end
 
   # Validate IP address format
   # @raise [ArgumentError] if IP address is invalid
@@ -69,10 +85,6 @@ class IpGeolocation
 end
 
 if __FILE__ == $PROGRAM_NAME
-  if ARGV.empty?
-    puts "Usage: #{$PROGRAM_NAME} <IP_ADDRESS>"
-    exit 1
-  end
-
+  # Create instance with command line argument or nil for auto-detection
   IpGeolocation.new(ARGV[0]).fetch_location
 end
