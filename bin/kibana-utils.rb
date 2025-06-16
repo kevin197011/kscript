@@ -16,6 +16,40 @@ class KibanaUtils
     @project_name = project_name
     @project_env = project_env
     @space_name = "#{project_name}-#{project_env}"
+
+    # Check and create space if it doesn't exist
+    create_space unless space_exists?
+  end
+
+  # Check if the space exists
+  def space_exists?
+    url = "#{@base_url}/api/spaces/space/#{@space_name}"
+    response = client.get(url, headers: kbn_headers)
+    response.status.success?
+  rescue StandardError => e
+    puts "Error checking space existence: #{e.message}"
+    false
+  end
+
+  # Create a new space
+  def create_space
+    url = "#{@base_url}/api/spaces/space"
+    body = {
+      id: @space_name,
+      name: @space_name,
+      description: "Space for #{@project_name} #{@project_env} environment",
+      color: "##{SecureRandom.hex(3)}", # Random color
+      initials: "#{@project_name[0]}#{@project_env[0]}".upcase
+    }
+
+    response = client.post(url, json: body, headers: kbn_headers)
+    if response.status.success?
+      puts "Space '#{@space_name}' created successfully!"
+    else
+      puts "Failed to create space '#{@space_name}': #{response.body}"
+    end
+  rescue StandardError => e
+    puts "Error creating space: #{e.message}"
   end
 
   # Return the HTTP client with authentication
