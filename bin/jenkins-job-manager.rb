@@ -9,14 +9,15 @@ require 'rexml/document'
 require 'json'
 require 'fileutils'
 
-$stdout.sync = true
-
+# Class for managing Jenkins jobs (export/import)
 class JenkinsJobManager
   def initialize(jenkins_url, user, password)
     @jenkins_url = jenkins_url
     @user = user
     @password = password
     @auth_header = "Basic #{Base64.strict_encode64("#{@user}:#{@password}")}"
+    @output = $stdout
+    @output.sync = true
   end
 
   def export_all_jobs
@@ -85,7 +86,7 @@ class JenkinsJobManager
     begin
       puts "Creating new job #{job_name}"
       create_new_job(job_name, config_xml)
-    rescue Exception
+    rescue StandardError
       puts "Updating existing job #{job_name}"
       HTTP.put(url, body: config_xml, headers: {
                  'Authorization' => @auth_header,
