@@ -33,3 +33,10 @@ task :dev do
     kscript version
   SHELL
 end
+
+task :install do
+  sh <<-SHELL
+    gem uninstall kscript -aIx
+    gem install kscript
+  SHELL
+end

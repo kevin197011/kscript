@@ -35,11 +35,4 @@ Gem::Specification.new do |spec|
   spec.metadata['rubygems_mfa_required'] = 'true'
 
   # spec.extensions = ['ext/install.rb'] # 已移除，防止 native extension build 错误
-
-  spec.post_install_message = <<~MSG
-    [kscript] Shell completion is available!
-    To enable shell completion for your shell, please run:
-      ruby ext/install.rb
-    Or see README for more details.
-  MSG
 end
