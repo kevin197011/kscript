@@ -1,0 +1,38 @@
+name: Release RubyGem
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+
+      - name: Install dependencies
+        run: |
+          gem install bundler
+          bundle install
+
+      - name: Build gem
+        run: |
+          gem build kscript.gemspec
+
+      - name: Publish to RubyGems
+        env:
+          RUBYGEMS_API_KEY: ${{ secrets.RUBYGEMS_API_KEY }}
+        run: |
+          gem push kscript-*.gem --key rubygems
+        # 兼容 rubygems.org 官方 key
+        shell: bash
+
+      - name: Post-release info
+        run: echo "Gem published to RubyGems!"

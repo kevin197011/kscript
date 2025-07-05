@@ -3,4 +3,4 @@
 
 require 'kscript/cli'
 
-Kscript::CLI.run!
+Kscript::CLI.start(ARGV)

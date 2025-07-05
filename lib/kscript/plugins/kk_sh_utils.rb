@@ -6,16 +6,18 @@
 # https://opensource.org/licenses/MIT
 
 require 'kscript'
+require 'nokogiri'
 
 module Kscript
-  class KkShellUtils < Base
+  class KkShUtils < Base
     CHT_SH_URL = 'https://cht.sh'
 
     attr_reader :command
 
     # Initialize with shell command to look up
     # @param command [String] command to get help for
-    def initialize(command = nil, *_args, **_opts)
+    def initialize(command = nil, *_args, **opts)
+      super(**opts.merge(service: 'kk_sh'))
       @command = command
     end
 
@@ -47,7 +49,7 @@ module Kscript
     end
 
     def self.usage
-      "kscript shell run 'ls -al'\nkscript shell exec 'echo hello'"
+      "kscript sh 'ls'\nkscript sh 'echo hello'"
     end
 
     def self.group
@@ -59,7 +61,7 @@ module Kscript
     end
 
     def self.description
-      'Query shell command usage and cheatsheets.'
+      'Query sh command usage and cheatsheets.'
     end
 
     private
@@ -74,9 +76,30 @@ module Kscript
     # @param response [HTTP::Response] response from cht.sh
     def display_result(response)
       if response.status.success?
-        logger.kinfo(response.body)
+        text = extract_plain_text(response.body)
+        logger.kinfo(text)
       else
         logger.kerror("Failed to retrieve data: #{response.status}")
+      end
+    end
+
+    # 提取纯文本内容
+    def extract_plain_text(body)
+      body = body.to_s
+      begin
+        doc = Nokogiri::HTML(body)
+        doc.search('script,style').remove
+        text = doc.text.lines.map(&:strip)
+        # 过滤掉包含广告/社交/Follow等内容的行
+        text = text.reject { |line| line =~ /Follow @|twitter|github|sponsor|donate|chubin|^!function/ }
+        text.reject!(&:empty?)
+        # 去除顶部多余空白行，只保留正文
+        text = text.drop_while(&:empty?)
+        text.join("\n")
+      rescue StandardError
+        body.gsub(/\e\[[\d;]*m/, '').lines.reject do |line|
+          line =~ /Follow @|twitter|github|sponsor|donate|chubin|^!function/
+        end.drop_while { |line| line.strip.empty? }.join
       end
     end
 

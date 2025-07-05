@@ -140,3 +140,19 @@ trace_id: my-global-trace
 
 - These settings will be used by default for all commands unless overridden by CLI options or environment variables.
 
+## Shell Completion 自动补全
+
+kscript 现已支持 zsh 和 bash 的命令自动补全，且**安装后首次运行会自动为你部署补全脚本**，无需手动操作。
+
+- **zsh 补全脚本路径**：`~/.zsh/completions/_kscript`
+- **bash 补全脚本路径**：`~/.bash_completion.d/kscript`
+
+如需手动重新生成补全脚本，可运行：
+
+```bash
+kscript completion zsh > ~/.zsh/completions/_kscript
+kscript completion bash > ~/.bash_completion.d/kscript
+```
+
+> 每次升级或新增命令后，补全脚本也会自动更新。
+

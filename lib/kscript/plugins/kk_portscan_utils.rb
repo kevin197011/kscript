@@ -31,11 +31,20 @@ module Kscript
 
     # Execute port scanning using multiple threads
     def scan
-      logger.kinfo("Scanning #{@target} ports #{@ports}")
+      msg = "Scanning #{@target} ports #{@ports}"
+      if human_output?
+        puts msg
+      else
+        logger.kinfo(msg)
+      end
       @ports.each do |port|
         Socket.tcp(@target, port, connect_timeout: 0.5) do |_sock|
-          logger.kinfo('Port open', port: port)
-          logger.kinfo("Port #{port} is open")
+          if human_output?
+            puts "Port #{port} is open"
+          else
+            logger.kinfo('Port open', port: port)
+            logger.kinfo("Port #{port} is open")
+          end
         end
       rescue Errno::ECONNREFUSED, Errno::ETIMEDOUT, SocketError
         # closed or filtered

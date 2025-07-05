@@ -30,5 +30,6 @@ task :dev do
     gem install kscript-*.gem
     kscript help
     kscript list
+    kscript version
   SHELL
 end
