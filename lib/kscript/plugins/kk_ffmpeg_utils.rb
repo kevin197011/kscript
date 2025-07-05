@@ -3,10 +3,10 @@
 # curl to execute this script:
 # curl -sSL https://raw.githubusercontent.com/kevin197011/kscript/main/bin/ffmpeg-installer.rb | ruby
 
-require 'kscript/base'
+require 'kscript'
 
 module Kscript
-  class KkFfmpegInstaller < Base
+  class KkFfmpegUtils < Base
     def run
       with_error_handling do
         install
@@ -132,5 +132,3 @@ module Kscript
     end
   end
 end
-
-Kscript::KkFfmpegInstaller.new.run if __FILE__ == $PROGRAM_NAME

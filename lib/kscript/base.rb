@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'kscript'
+
 module Kscript
   # Base class for all kscript scripts
   class Base
@@ -25,6 +27,18 @@ module Kscript
     def logger
       @logger.define_singleton_method(:default_trace_id) { @trace_id } if @trace_id
       @logger
+    end
+
+    # 自动注册所有 Kscript::Base 的子类为插件
+    def self.inherited(subclass)
+      name = subclass.name.split('::').last
+      if name.start_with?('Kk') && name.end_with?('Utils')
+        cmd = name[2..-6] # 去掉 Kk 和 Utils
+        # 转 snake_case
+        cmd = cmd.gsub(/([A-Z])/, '_\1').downcase.sub(/^_/, '').sub(/_$/, '')
+        Kscript::Plugin.register(cmd.to_sym, subclass)
+      end
+      super if defined?(super)
     end
   end
 end

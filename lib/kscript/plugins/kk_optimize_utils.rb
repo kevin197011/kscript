@@ -8,11 +8,11 @@
 # curl to execute this script:
 # curl -sSL https://raw.githubusercontent.com/kevin197011/kscript/main/bin/mac-optimize.rb | ruby
 
-require 'kscript/base'
+require 'kscript'
 require 'open3'
 
 module Kscript
-  class KkMacOptimize < Base
+  class KkOptimizeUtils < Base
     def run
       with_error_handling do
         optimize
@@ -82,5 +82,3 @@ module Kscript
     end
   end
 end
-
-Kscript::KkMacOptimize.new.run if __FILE__ == $PROGRAM_NAME

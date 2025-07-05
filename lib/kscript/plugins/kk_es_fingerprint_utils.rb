@@ -3,10 +3,11 @@
 # curl to execute this script:
 # curl -sSL https://raw.githubusercontent.com/kevin197011/kscript/main/bin/elastic-cert-fingerprint.rb | ruby
 
-require 'openssl'
+require 'kscript'
+require 'kscript/base'
 
 module Kscript
-  class KkElasticCertFingerprint < Base
+  class KkEsFingerprintUtils < Base
     DEFAULT_CERT_PATH = 'elasticsearch.crt'
 
     attr_reader :cert_path
@@ -84,5 +85,3 @@ module Kscript
     end
   end
 end
-
-Kscript::KkElasticCertFingerprint.new.run if __FILE__ == $PROGRAM_NAME

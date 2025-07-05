@@ -3,12 +3,13 @@
 # curl to execute this script:
 # curl -sSL https://raw.githubusercontent.com/kevin197011/kscript/main/bin/apnic-ip-range.rb | ruby
 
+require 'kscript'
 require 'http'
 require 'uri'
 require 'kscript/base'
 
 module Kscript
-  class KkApnicIpRange < Base
+  class KkApnicUtils < Base
     attr_reader :country_sn, :cache_file
 
     # Initialize class instance, set country code and cache file path
@@ -79,5 +80,3 @@ module Kscript
     end
   end
 end
-
-Kscript::KkApnicIpRange.new.run if __FILE__ == $PROGRAM_NAME

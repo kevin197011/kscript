@@ -8,7 +8,7 @@
 # curl to execute this script:
 # curl -sSL https://raw.githubusercontent.com/kevin197011/kscript/main/bin/mac-top-usage.rb | ruby
 
-require 'kscript/base'
+require 'kscript'
 
 # 彩色输出定义
 RED    = "\e[1;31m"
@@ -18,7 +18,7 @@ CYAN   = "\e[1;36m"
 NC     = "\e[0m" # No Color
 
 module Kscript
-  class KkMacTopUsage < Base
+  class KkTopUtils < Base
     def run
       with_error_handling do
         print_report
@@ -74,4 +74,4 @@ module Kscript
   end
 end
 
-Kscript::KkMacTopUsage.new.run if __FILE__ == $PROGRAM_NAME
+Kscript::KkTopUtils.new.run if __FILE__ == $PROGRAM_NAME

@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
-require 'kscript/base'
+require 'kscript'
 
 # curl to execute this script:
 # curl -sSL https://raw.githubusercontent.com/kevin197011/kscript/main/bin/lvm-mounter.rb | ruby
 
 module Kscript
-  class KkLvmMounter < Base
+  class KkLvmUtils < Base
     DEFAULT_CONFIG = {
       device: '/dev/sdb',
       volume_group: 'vg_data',

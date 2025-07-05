@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
-require 'kscript/base'
+require 'kscript'
 
 # curl to execute this script:
 # curl -sSL https://raw.githubusercontent.com/kevin197011/kscript/main/bin/wireguard-acl.rb | ruby
 
 module Kscript
-  class KkWireguardAcl < Base
+  class KkWgAclUtils < Base
     WIREGUARD_PORT = 51_821
     ALLOWED_IPS = %w[127.0.0.1].freeze
 
@@ -87,5 +87,3 @@ module Kscript
     end
   end
 end
-
-Kscript::KkWireguardAcl.new.run if __FILE__ == $PROGRAM_NAME

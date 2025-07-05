@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
-require 'kscript/base'
+require 'kscript'
 
 # curl to execute this script:
 # curl -sSL https://raw.githubusercontent.com/kevin197011/kscript/main/bin/rename.rb | ruby
 
 module Kscript
-  class KkRename < Base
+  class KkRenameUtils < Base
     attr_reader :source_pattern, :target_pattern, :directory
 
     def initialize(source_pattern = nil, target_pattern = nil, directory = Dir.pwd, **opts)
@@ -73,12 +73,4 @@ module Kscript
       logger.error("Error renaming #{old_name}: #{e.message}")
     end
   end
-end
-
-if __FILE__ == $PROGRAM_NAME
-  if ARGV.length != 2
-    puts "Usage: #{$PROGRAM_NAME} '<source_pattern>' '<target_pattern>'"
-    exit 1
-  end
-  Kscript::KkRename.new(ARGV[0], ARGV[1]).run
 end

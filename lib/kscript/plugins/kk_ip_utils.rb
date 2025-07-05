@@ -1,14 +1,16 @@
 # frozen_string_literal: true
 
+require 'kscript'
+
 # curl to execute this script:
 # curl -sSL https://raw.githubusercontent.com/kevin197011/kscript/main/bin/ip-api.rb | ruby
 
-require_relative '../base' unless defined?(Kscript::Base)
 require 'http'
 require 'json'
+require 'kscript/base'
 
 module Kscript
-  class KkIpApi < Base
+  class KkIpUtils < Base
     IP_API_BASE_URL = 'http://ip-api.com/json'
     IP_CHECK_URL = 'https://api.ipify.org?format=json'
 
@@ -82,5 +84,3 @@ module Kscript
     end
   end
 end
-
-Kscript::KkIpApi.new(ARGV[0]).run if __FILE__ == $PROGRAM_NAME

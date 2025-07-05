@@ -3,11 +3,12 @@
 # curl to execute this script:
 # curl -sSL https://raw.githubusercontent.com/kevin197011/kscript/main/bin/source-cleaner.rb | ruby
 
-require 'kscript/base'
+require 'kscript'
 require 'fileutils'
+require 'kscript/base'
 
 module Kscript
-  class KkSourceCleaner < Base
+  class KkCleanerUtils < Base
     DEFAULT_RETAIN_VERSIONS = 10
 
     attr_reader :source_path, :retain_count
@@ -76,5 +77,3 @@ module Kscript
     end
   end
 end
-
-Kscript::KkSourceCleaner.new.run if __FILE__ == $PROGRAM_NAME

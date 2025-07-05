@@ -3,6 +3,7 @@
 # curl to execute this script:
 # curl -sSL https://raw.githubusercontent.com/kevin197011/kscript/main/bin/jenkins-job-manager.rb | ruby
 
+require 'kscript'
 require 'http'
 require 'base64'
 require 'rexml/document'
@@ -11,7 +12,7 @@ require 'fileutils'
 require 'kscript/base'
 
 module Kscript
-  class KkJenkinsJobManager < Base
+  class KkJenkinsUtils < Base
     def run
       with_error_handling do
         puts 'Jenkins job manager executed.'
@@ -133,11 +134,4 @@ module Kscript
       end
     end
   end
-end
-
-if __FILE__ == $PROGRAM_NAME
-  jenkins_url = 'https://jenkins.devops.io'
-  user = 'kk'
-  password = 'xxxxxxxxxxxxxxxxxxxxxxxx' # Jenkins API Token Or password
-  Kscript::KkJenkinsJobManager.new(jenkins_url, user, password).run
 end

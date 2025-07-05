@@ -3,6 +3,7 @@
 # curl to execute this script:
 # curl -sSL https://raw.githubusercontent.com/kevin197011/kscript/main/bin/kibana-utils.rb | ruby
 
+require 'kscript'
 require 'http'
 require 'json'
 require 'securerandom'
@@ -231,5 +232,3 @@ module Kscript
     end
   end
 end
-
-Kscript::KkKibanaUtils.new.run if __FILE__ == $PROGRAM_NAME

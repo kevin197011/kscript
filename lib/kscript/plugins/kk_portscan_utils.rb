@@ -3,12 +3,12 @@
 # curl to execute this script:
 # curl -sSL https://raw.githubusercontent.com/kevin197011/kscript/main/bin/port-scanner.rb | ruby
 
-require 'kscript/base'
+require 'kscript'
 require 'socket'
 require 'timeout'
 
 module Kscript
-  class KkPortScanner < Base
+  class KkPortscanUtils < Base
     attr_reader :host, :ports, :thread_count
 
     # Initialize the scanner with target host and port range
@@ -78,12 +78,4 @@ module Kscript
       puts " [-] Error scanning port #{port}: #{e.message}"
     end
   end
-end
-
-if __FILE__ == $PROGRAM_NAME
-  if ARGV.empty?
-    puts "Usage: #{$PROGRAM_NAME} <target_host>"
-    exit 1
-  end
-  Kscript::KkPortScanner.new(ARGV[0]).run
 end

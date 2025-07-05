@@ -23,10 +23,12 @@ task :push do
 end
 
 # 其他自定义任务可在此添加
-task :build do
-  system <<-SHELL
+task :dev do
+  sh <<-SHELL
+    gem uninstall kscript -aIx
     gem build kscript.gemspec
     gem install kscript-*.gem
-    kscript --help
+    kscript help
+    kscript list
   SHELL
 end

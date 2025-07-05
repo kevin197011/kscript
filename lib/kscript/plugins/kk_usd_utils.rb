@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'kscript'
+
 # curl to execute this script:
 # curl -sSL https://raw.githubusercontent.com/kevin197011/kscript/main/bin/usd-rate.rb | ruby
 
@@ -7,7 +9,7 @@ require 'net/http'
 require 'json'
 
 module Kscript
-  class KkUsdRate < Base
+  class KkUsdUtils < Base
     API_URL = 'https://api.exchangerate-api.com/v4/latest/USD'
 
     def run
@@ -41,5 +43,3 @@ module Kscript
     end
   end
 end
-
-Kscript::KkUsdRate.new.run if __FILE__ == $PROGRAM_NAME

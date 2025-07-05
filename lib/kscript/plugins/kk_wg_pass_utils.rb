@@ -3,11 +3,11 @@
 # curl to execute this script:
 # curl -sSL https://raw.githubusercontent.com/kevin197011/kscript/main/bin/wireguard-password.rb | ruby
 
-require 'kscript/base'
+require 'kscript'
 require 'bcrypt'
 
 module Kscript
-  class KkWireguardPassword < Base
+  class KkWgPassUtils < Base
     def run
       with_error_handling do
         generate
@@ -37,5 +37,3 @@ module Kscript
     end
   end
 end
-
-Kscript::KkWireguardPassword.new.run if __FILE__ == $PROGRAM_NAME

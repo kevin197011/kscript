@@ -55,6 +55,16 @@ if ARGV.empty? || (ARGV[0] =~ /^(-h|--help|help)$/)
 end
 
 cmd = ARGV.shift
+
+# 新增 list 命令
+if cmd == 'list'
+  puts "\nAvailable commands:"
+  PLUGIN_INFOS.each do |info|
+    puts "  #{info[:name].to_s.sub(/^kk_/, '').ljust(24)}#{info[:description] || ''}"
+  end
+  exit 0
+end
+
 plugin_info = PLUGIN_INFOS.find { |info| info[:name].to_s.sub(/^kk_/, '') == cmd }
 
 if plugin_info && ARGV[0] =~ /^(-h|--help|help)$/
@@ -69,9 +79,12 @@ if plugin_info && ARGV[0] =~ /^(-h|--help|help)$/
   exit 0
 end
 
-plugin_file = File.join(PLUGINS_DIR, "kk_#{cmd}.rb")
+# 查找插件文件，支持 _utils 后缀
+plugin_glob = File.join(PLUGINS_DIR, "kk_#{cmd}*_utils.rb")
+plugin_files = Dir.glob(plugin_glob)
+plugin_file = plugin_files.first
 
-unless File.exist?(plugin_file)
+unless plugin_file && File.exist?(plugin_file)
   warn "Unknown command: #{cmd}\n"
   puts HELP
   exit 1

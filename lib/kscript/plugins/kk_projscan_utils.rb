@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
+require 'kscript'
+
 # curl to execute this script:
 # curl -sSL https://raw.githubusercontent.com/kevin197011/kscript/main/bin/project-scanner.rb | ruby
 
-require 'json'
-
 module Kscript
-  class KkProjectScanner < Base
+  class KkProjscanUtils < Base
     def initialize(src_path = nil, **opts)
       super(**opts.merge(service: 'kk_project_scanner'))
       @src_path = src_path || File.expand_path('~/projects/src')
@@ -85,5 +85,3 @@ module Kscript
     end
   end
 end
-
-Kscript::KkProjectScanner.new.run if __FILE__ == $PROGRAM_NAME

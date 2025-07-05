@@ -3,10 +3,11 @@
 # curl to execute this script:
 # curl -sSL https://raw.githubusercontent.com/kevin197011/kscript/main/bin/shell-helper.rb | ruby
 
+require 'kscript'
 require 'http'
 
 module Kscript
-  class KkShellHelper < Base
+  class KkShellUtils < Base
     CHT_SH_URL = 'https://cht.sh'
 
     attr_reader :command
@@ -81,5 +82,3 @@ module Kscript
     end
   end
 end
-
-Kscript::KkShellHelper.new.run if __FILE__ == $PROGRAM_NAME

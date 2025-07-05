@@ -8,10 +8,10 @@
 # curl to execute this script:
 # curl -sSL https://raw.githubusercontent.com/kevin197011/kscript/main/bin/mac-sys-check.rb | ruby
 
-require 'kscript/base'
+require 'kscript'
 
 module Kscript
-  class KkMacSysCheck < Base
+  class KkSyscheckUtils < Base
     def run
       with_error_handling do
         check
@@ -83,5 +83,3 @@ module Kscript
     end
   end
 end
-
-Kscript::KkMacSysCheck.new.run if __FILE__ == $PROGRAM_NAME

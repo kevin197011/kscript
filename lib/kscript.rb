@@ -9,7 +9,6 @@ require 'json'
 require 'logger'
 require 'securerandom'
 require 'kscript/plugins'
-
 require 'kscript/base'
 require 'kscript/logger'
 require 'kscript/utils'
@@ -36,13 +35,7 @@ module Kscript
     end
   end
 
-  # 自动加载 plugins 目录下所有插件（仅开发环境）
-  if File.directory?(File.expand_path('kscript/plugins', __dir__))
-    Dir[File.expand_path('kscript/plugins/*.rb', __dir__)].each do |plugin|
-      require_relative plugin.sub("#{File.expand_path(__dir__)}/", '')
-    end
-  end
-
+  # 统一插件加载，无论开发还是生产环境
   Kscript::PluginLoader.load_all
 
   class Error < StandardError; end
