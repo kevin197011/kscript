@@ -1,4 +1,5 @@
 # kscript
+
 ```
 ______                     _____        _____
 ___  /________________________(_)_________  /_
@@ -8,20 +9,32 @@ _  ,<  _(__  )/ /__ _  /   _  / __  /_/ / /_
                                 /_/
 ```
 
-A collection of Ruby utility scripts for various system administration and development tasks.
+[![Gem Version](https://img.shields.io/gem/v/kscript?style=flat-square)](https://rubygems.org/gems/kscript)
+[![CI Status](https://github.com/kevin197011/kscript/actions/workflows/gem-push.yml/badge.svg?branch=main)](https://github.com/kevin197011/kscript/actions/workflows/gem-push.yml)
 
-[![Gem Version](https://img.shields.io/gem/v/kscript)](https://rubygems.org/gems/kscript)
-[![Ruby](https://github.com/kevin197011/kscript/actions/workflows/gem-push.yml/badge.svg)](https://github.com/kevin197011/kscript/actions/workflows/gem-push.yml)
+> Ruby CLI 工具集，专为系统运维、开发自动化、网络与项目管理场景设计。支持插件化、极致美化输出、自动补全、结构化日志、CI/CD 自动发布等现代特性。
 
-## Installation
+---
 
-### Gem install (recommended)
+## ✨ 特性亮点
+- **统一 CLI 框架**：所有命令一键调用，美化输出
+- **插件化架构**：业务命令即插件，易扩展、易维护
+- **极致美化**：ASCII banner、彩色分组、对齐、分隔线，极客体验
+- **人性化/结构化日志双模式**：`--log`/`--log-level` 切换，支持 JSON/终端友好输出
+- **自动补全**：zsh/bash 补全脚本自动部署，命令一键补全
+- **参数健壮**：所有插件兼容多余参数，支持全局参数过滤
+- **CI/CD 自动发布**：GitHub Actions 自动构建并推送 RubyGem
+- **多平台支持**：macOS、Linux、Windows（部分工具）
+
+---
+
+## 🚀 安装
 
 ```bash
 gem install kscript
 ```
 
-Or from local source:
+或源码安装：
 
 ```bash
 git clone https://github.com/kevin197011/kscript.git
@@ -30,140 +43,130 @@ gem build kscript.gemspec
 gem install ./kscript-*.gem
 ```
 
-### Bundler (for development)
+---
 
+## 🛠️ 快速上手
+
+### 查看所有命令
 ```bash
-git clone https://github.com/kevin197011/kscript.git
-cd kscript
-bundle install
+kscript list
 ```
 
-## Usage
-
-Most scripts can be executed directly via command line after gem install:
-
+### 查看主命令帮助
 ```bash
-kscript SCRIPT_NAME [args]
+kscript help
 ```
 
-Or, for legacy usage via curl:
-
+### 查看版本
 ```bash
-curl -sSL https://raw.githubusercontent.com/kevin197011/kscript/main/bin/SCRIPT_NAME.rb | ruby
+kscript version
 ```
 
-## Available Scripts
-
-### System Tools
-- `mac-top-usage.rb` - Display top CPU and memory usage processes on macOS
-- `port-scanner.rb` - Multi-threaded port scanner
-- `mouse-simulator.rb` - Simulate mouse movement to prevent system idle
-- `source-cleaner.rb` - Clean up old source code versions
-- `ffmpeg-installer.rb` - FFmpeg installation script for Linux systems
-
-### Network Tools
-- `ip-api.rb` - Query IP geolocation information (supports auto-detecting public IP)
-- `apnic-ip-range.rb` - Fetch IP ranges from APNIC database
-- `wireguard-acl.rb` - Configure WireGuard firewall access control
-- `wireguard-password.rb` - Generate WireGuard password hashes
-
-### Development Tools
-- `shell-helper.rb` - Quick shell command reference tool
-- `rename.rb` - Batch rename files using regular expressions
-- `jenkins-job-manager.rb` - Manage Jenkins jobs (export/import)
-- `kibana-utils.rb` - Kibana management utilities
-
-### Windows Specific
-- `windows-font-enhancer.rb` - Enhance Windows font rendering (macOS-like)
-
-### Infrastructure Tools
-- `elastic-cert-fingerprint.rb` - Generate Elasticsearch certificate fingerprints
-- `lvm-mounter.rb` - LVM volume creation and mounting utility
-
-## Examples
-
-1. Query IP geolocation:
+### 执行插件命令
 ```bash
-# Query specific IP
-curl -sSL https://raw.githubusercontent.com/kevin197011/kscript/main/bin/ip-api.rb | ruby 8.8.8.8
-
-# Query your public IP
-curl -sSL https://raw.githubusercontent.com/kevin197011/kscript/main/bin/ip-api.rb | ruby
+kscript <command> [args...]
+# 例如
+kscript apnic CN
+kscript portscan 192.168.1.1
+kscript sh 'ls -l'
+kscript projscan ~/projects
 ```
 
-2. View system resource usage:
+### 结构化日志模式
 ```bash
-curl -sSL https://raw.githubusercontent.com/kevin197011/kscript/main/bin/mac-top-usage.rb | ruby
+kscript apnic CN --log
+kscript portscan 192.168.1.1 --log-level=debug
 ```
 
-3. Scan ports:
-```bash
-curl -sSL https://raw.githubusercontent.com/kevin197011/kscript/main/bin/port-scanner.rb | ruby
-```
+---
 
-## Dependencies
+## 🧩 插件与命令一览
 
-Required gems:
-```ruby
-gem 'http'
-gem 'rubocop'
-```
+> 运行 `kscript list` 可分组美化展示所有插件命令
 
-## License
+- **network**
+  - `apnic`：获取国家 IPv4 段
+  - `portscan`：端口扫描
+  - `ip`：IP 工具
+  - `wg_acl`：WireGuard 防火墙 ACL
+  - `wg_pass`：WireGuard 密码工具
+- **project**
+  - `projscan`：扫描目录下所有 git 项目
+  - `cleaner`：源码多版本清理
+  - `rename`：批量重命名文件
+- **system/macos**
+  - `syscheck`：macOS 系统健康检查
+  - `top`：macOS 资源占用排行
+  - `optimize`：macOS 性能优化
+  - `sh`：命令行速查/cheatsheet
+- **media**
+  - `ffmpeg`：FFmpeg 安装与检测
+- **elastic**
+  - `es_fingerprint`：Elasticsearch 证书指纹
+  - `kibana`：Kibana 空间/索引/用户/角色自动化
+- **ci**
+  - `jenkins`：Jenkins Job 导入导出
+- **其它**
+  - `usd`：美元汇率工具
+  - `lvm`：LVM 卷管理
+  - `windows_font_enhancer`：Windows 字体增强
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+---
 
-## Contributing
+## ⚡ Shell 自动补全
 
-1. Fork it
-2. Create your feature branch (`git checkout -b feature/my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin feature/my-new-feature`)
-5. Create new Pull Request
+- **首次运行自动为 zsh/bash 部署补全脚本**，无需手动操作
+- 补全脚本路径：
+  - zsh: `~/.zsh/completions/_kscript`
+  - bash: `~/.bash_completion.d/kscript`
+- 手动生成：
+  ```bash
+  kscript completion zsh > ~/.zsh/completions/_kscript
+  kscript completion bash > ~/.bash_completion.d/kscript
+  ```
 
-## Unified CLI Usage
+---
 
-After gem install, you can use the unified kk command:
+## ⚙️ 全局配置
 
-```bash
-kk <command> [args...]
-
-# List all available tools
-kk --help
-
-# Example: scan ports
-kk port-scanner 192.168.1.1
-
-# Example: check macOS system
-kk mac-sys-check
-```
-
-Each subcommand supports --help for its own usage.
-
-## Global Configuration
-
-You can set global options for all kk tools in `~/.kscriptrc` (YAML format):
+在 `~/.kscriptrc` (YAML) 配置全局参数：
 
 ```yaml
 log_level: debug
-trace_id: my-global-trace
 ```
 
-- These settings will be used by default for all commands unless overridden by CLI options or environment variables.
+---
 
-## Shell Completion 自动补全
+## 🧑‍💻 插件开发规范
+- 插件文件统一放在 `lib/kscript/plugins/kk_xxx_utils.rb`
+- 类名如 `KkApnicUtils`，自动注册为 `apnic` 命令
+- 支持 `self.description`、`self.usage`、`self.arguments`、`self.group`、`self.author`
+- 输出统一用 `logger.kinfo`/`logger.kerror`，支持结构化日志
+- 兼容多余参数，避免 ArgumentError
 
-kscript 现已支持 zsh 和 bash 的命令自动补全，且**安装后首次运行会自动为你部署补全脚本**，无需手动操作。
+---
 
-- **zsh 补全脚本路径**：`~/.zsh/completions/_kscript`
-- **bash 补全脚本路径**：`~/.bash_completion.d/kscript`
+## 🚚 CI/CD 自动发布
 
-如需手动重新生成补全脚本，可运行：
+- `.github/workflows/gem-push.yml`：main 分支和 PR 自动构建、tag push 自动发布到 RubyGems
+- 需在 GitHub secrets 配置 `RUBYGEMS_API_KEY`
+- [CI 状态与历史](https://github.com/kevin197011/kscript/actions/workflows/gem-push.yml)
 
-```bash
-kscript completion zsh > ~/.zsh/completions/_kscript
-kscript completion bash > ~/.bash_completion.d/kscript
-```
+---
 
-> 每次升级或新增命令后，补全脚本也会自动更新。
+## 📄 许可证
+
+MIT License. 详见 [LICENSE](LICENSE)。
+
+---
+
+## 🤝 贡献
+
+1. Fork & PR
+2. 遵循输出与插件开发规范
+3. 保持文档与代码同步
+
+---
+
+如需更多示例、插件开发指导或遇到问题，欢迎提 issue 或 PR！
 
