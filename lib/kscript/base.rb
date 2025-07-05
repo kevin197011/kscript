@@ -13,6 +13,7 @@ module Kscript
       trace_id ||= config&.trace_id || ENV['KSCRIPT_TRACE_ID']
       @trace_id = trace_id
       @logger = Kscript::Logger.new(service: service || self.class.name, level: log_level)
+      @logger.set_human_output(human_output?)
     end
 
     # 通用工具方法可在此扩展
@@ -39,6 +40,11 @@ module Kscript
         Kscript::Plugin.register(cmd.to_sym, subclass)
       end
       super if defined?(super)
+    end
+
+    # 判断是否为人性化输出模式（无 --log/--log-level 参数且 ENV['LOG'] 未设置）
+    def human_output?
+      !(ARGV.include?('--log') || ARGV.include?('--log-level') || ENV['LOG'])
     end
   end
 end

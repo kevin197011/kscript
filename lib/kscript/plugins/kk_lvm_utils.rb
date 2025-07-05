@@ -1,9 +1,11 @@
 # frozen_string_literal: true
 
-require 'kscript'
+# Copyright (c) 2025 Kk
+#
+# This software is released under the MIT License.
+# https://opensource.org/licenses/MIT
 
-# curl to execute this script:
-# curl -sSL https://raw.githubusercontent.com/kevin197011/kscript/main/bin/lvm-mounter.rb | ruby
+require 'kscript'
 
 module Kscript
   class KkLvmUtils < Base
@@ -18,7 +20,7 @@ module Kscript
 
     # Initialize the LVM mounter with configuration
     # @param config [Hash] configuration options
-    def initialize(config = {})
+    def initialize(config = {}, *_args, **_opts)
       @config = DEFAULT_CONFIG.merge(config)
     end
 
@@ -44,7 +46,7 @@ module Kscript
     end
 
     def self.usage
-      "kscript lvm_mounter /dev/sda2 /mnt/data\nkscript lvm_mounter /dev/vg0/lv_home /mnt/home"
+      "kscript lvm /dev/sda2 /mnt/data\nkscript lvm /dev/vg0/lv_home /mnt/home"
     end
 
     def self.group
@@ -53,6 +55,10 @@ module Kscript
 
     def self.author
       'kk'
+    end
+
+    def self.description
+      'Mount and manage Linux LVM volumes.'
     end
 
     private
@@ -68,7 +74,7 @@ module Kscript
     def ensure_lvm_tools_installed
       return if system('which pvcreate > /dev/null 2>&1')
 
-      puts '🔧 Installing LVM tools...'
+      logger.kinfo('🔧 Installing LVM tools...')
       case detect_os_family
       when 'redhat'
         run_command('yum install -y lvm2')
@@ -113,13 +119,13 @@ module Kscript
 
       return if fstab_contains_uuid?(uuid)
 
-      puts '👉 Updating /etc/fstab...'
+      logger.kinfo('👉 Updating /etc/fstab...')
       File.open('/etc/fstab', 'a') { |f| f.puts(fstab_line) }
     end
 
     # Display current mount status
     def display_mount_status
-      puts "✅ Volume mounted successfully at #{config[:mount_point]}:"
+      logger.kinfo("✅ Volume mounted successfully at #{config[:mount_point]}:")
       system("df -h #{config[:mount_point]}")
     end
 
@@ -136,12 +142,12 @@ module Kscript
     end
 
     def run_command(cmd)
-      puts "👉 Running: #{cmd}"
+      logger.kinfo("👉 Running: #{cmd}")
       system(cmd) || fail_with_error("Command failed: #{cmd}")
     end
 
     def fail_with_error(msg)
-      puts "❌ #{msg}"
+      logger.kerror("❌ #{msg}")
       exit 1
     end
 

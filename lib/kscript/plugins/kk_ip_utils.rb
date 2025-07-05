@@ -1,13 +1,14 @@
 # frozen_string_literal: true
 
-require 'kscript'
+# Copyright (c) 2025 Kk
+#
+# This software is released under the MIT License.
+# https://opensource.org/licenses/MIT
 
-# curl to execute this script:
-# curl -sSL https://raw.githubusercontent.com/kevin197011/kscript/main/bin/ip-api.rb | ruby
+require 'kscript'
 
 require 'http'
 require 'json'
-require 'kscript/base'
 
 module Kscript
   class KkIpUtils < Base
@@ -16,7 +17,7 @@ module Kscript
 
     attr_reader :ip_address
 
-    def initialize(ip_address = nil, **opts)
+    def initialize(ip_address = nil, *_args, **opts)
       super(**opts.merge(service: 'kk_ip_api'))
       @ip_address = ip_address || fetch_public_ip
     end
@@ -38,7 +39,7 @@ module Kscript
     end
 
     def self.usage
-      "kscript ip_api 8.8.8.8\nkscript ip_api 1.1.1.1"
+      "kscript ip <ip_address>\nkscript ip 8.8.8.8"
     end
 
     def self.group
@@ -47,6 +48,10 @@ module Kscript
 
     def self.author
       'kk'
+    end
+
+    def self.description
+      'Query IP geolocation and ISP info.'
     end
 
     private
@@ -76,10 +81,9 @@ module Kscript
 
     def handle_response(response)
       if response.status.success?
-        logger.info('IP location result', data: response.parse(:json))
-        puts JSON.pretty_generate(response.parse(:json))
+        logger.kinfo('IP location result', data: response.parse(:json))
       else
-        logger.error("API request failed: #{response.status}")
+        logger.kerror("API request failed: #{response.status}")
       end
     end
   end

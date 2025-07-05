@@ -5,9 +5,6 @@
 # This software is released under the MIT License.
 # https://opensource.org/licenses/MIT
 
-# curl to execute this script:
-# curl -sSL https://raw.githubusercontent.com/kevin197011/kscript/main/bin/mac-sys-check.rb | ruby
-
 require 'kscript'
 
 module Kscript
@@ -19,9 +16,9 @@ module Kscript
     end
 
     def check
-      puts '======= 🍎 macOS System Resource Monitor Report ======='
-      puts "📅 Date Time: #{Time.now}"
-      puts
+      logger.kinfo('======= 🍎 macOS System Resource Monitor Report =======')
+      logger.kinfo("📅 Date Time: #{Time.now}")
+      logger.kinfo('')
 
       # macOS ps command for process monitoring
       cpu_cmd = 'ps aux | sort -nrk 3 | head -n 10'
@@ -31,13 +28,13 @@ module Kscript
       run('Memory Usage (Top 10)', mem_cmd)
 
       if `which powermetrics`.strip.empty?
-        puts "\n👉 GPU Usage:"
-        puts '⚠️ powermetrics not installed, please run: xcode-select --install'
+        logger.kinfo("\n👉 GPU Usage:")
+        logger.kwarn('⚠️ powermetrics not installed, please run: xcode-select --install')
       else
         run('GPU Usage', 'powermetrics --samplers gpu_power -n 1', sudo: true)
       end
 
-      puts "\n👉 Top 10 Processes by Network Connections:"
+      logger.kinfo("\n👉 Top 10 Processes by Network Connections:")
       lsof_output = `lsof -i -nP | grep ESTABLISHED`
       counts = Hash.new(0)
       lsof_output.each_line do |line|
@@ -45,21 +42,21 @@ module Kscript
         counts[process] += 1
       end
       counts.sort_by { |_, v| -v }.first(10).each do |proc, count|
-        puts "#{proc}: #{count} connections"
+        logger.kinfo("#{proc}: #{count} connections")
       end
 
-      puts "\n👉 System Overview:"
+      logger.kinfo("\n👉 System Overview:")
       cpu_core = `sysctl -n hw.ncpu`.strip
       mem_size = `sysctl -n hw.memsize`.to_i / 1024 / 1024 / 1024
-      puts "CPU Cores: #{cpu_core}"
-      puts "Physical Memory: #{mem_size} GB"
+      logger.kinfo("CPU Cores: #{cpu_core}")
+      logger.kinfo("Physical Memory: #{mem_size} GB")
 
       vm_stats = `vm_stat`
       vm_stats.each_line do |line|
-        puts line if line =~ /Pages (active|wired down|free):/
+        logger.kinfo(line) if line =~ /Pages (active|wired down|free):/
       end
 
-      puts "\n✅ System resource check completed!"
+      logger.kinfo("\n✅ System resource check completed!")
     end
 
     def self.description
@@ -71,7 +68,7 @@ module Kscript
     end
 
     def self.usage
-      "kscript mac_sys_check\nkscript mac_sys_check --detail"
+      "kscript syscheck\nkscript syscheck --detail"
     end
 
     def self.group

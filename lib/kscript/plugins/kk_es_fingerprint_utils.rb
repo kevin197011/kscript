@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
-# curl to execute this script:
-# curl -sSL https://raw.githubusercontent.com/kevin197011/kscript/main/bin/elastic-cert-fingerprint.rb | ruby
+# Copyright (c) 2025 Kk
+#
+# This software is released under the MIT License.
+# https://opensource.org/licenses/MIT
 
 require 'kscript'
-require 'kscript/base'
 
 module Kscript
   class KkEsFingerprintUtils < Base
@@ -29,7 +30,7 @@ module Kscript
     end
 
     def self.usage
-      "kscript elastic_cert_fingerprint /etc/elasticsearch/certs/http_ca.crt\nkscript elastic_cert_fingerprint ./ca.crt"
+      "kscript es_fingerprint <cert_file>\nkscript es_fingerprint ./ca.crt"
     end
 
     def self.group
@@ -38,6 +39,10 @@ module Kscript
 
     def self.author
       'kk'
+    end
+
+    def self.description
+      'Generate Elasticsearch certificate SHA256 fingerprint.'
     end
 
     private
@@ -81,7 +86,7 @@ module Kscript
     # Display the formatted fingerprint
     # @param fingerprint [String] formatted fingerprint to display
     def display_fingerprint(fingerprint)
-      puts fingerprint
+      logger.kinfo(fingerprint)
     end
   end
 end

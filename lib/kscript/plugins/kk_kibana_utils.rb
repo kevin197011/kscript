@@ -1,19 +1,18 @@
 # frozen_string_literal: true
 
-# curl to execute this script:
-# curl -sSL https://raw.githubusercontent.com/kevin197011/kscript/main/bin/kibana-utils.rb | ruby
+# Copyright (c) 2025 Kk
+#
+# This software is released under the MIT License.
+# https://opensource.org/licenses/MIT
 
 require 'kscript'
-require 'http'
-require 'json'
 require 'securerandom'
-require 'kscript/base'
 
 module Kscript
   class KkKibanaUtils < Base
     def run
       with_error_handling do
-        puts 'Kibana utils executed.'
+        logger.kinfo('Kibana utils executed.')
       end
     end
 
@@ -35,7 +34,7 @@ module Kscript
       response = client.get(url, headers: kbn_headers)
       response.status.success?
     rescue StandardError => e
-      puts "Error checking space existence: #{e.message}"
+      logger.kerror("Error checking space existence: #{e.message}")
       false
     end
 
@@ -52,12 +51,12 @@ module Kscript
 
       response = client.post(url, json: body, headers: kbn_headers)
       if response.status.success?
-        puts "Space '#{@space_name}' created successfully!"
+        logger.kinfo("Space '#{@space_name}' created successfully!")
       else
-        puts "Failed to create space '#{@space_name}': #{response.body}"
+        logger.kerror("Failed to create space '#{@space_name}': #{response.body}")
       end
     rescue StandardError => e
-      puts "Error creating space: #{e.message}"
+      logger.kerror("Error creating space: #{e.message}")
     end
 
     # Return the HTTP client with authentication
@@ -95,7 +94,7 @@ module Kscript
 
       response = client.post(url, json: body, headers: kbn_headers)
       if response.status.success?
-        puts "#{index_name} Index creation successful!"
+        logger.kinfo("#{index_name} Index creation successful!")
       else
         handle_error(response, index_name)
       end
@@ -137,7 +136,7 @@ module Kscript
         ]
       }.to_json
       client.put(url, body: request_body, headers: kbn_headers)
-      puts "Create #{@project_name} user role sucessed!"
+      logger.kinfo("Create #{@project_name} user role sucessed!")
     end
 
     def create_user
@@ -150,7 +149,7 @@ module Kscript
         'roles' => [@project_name]
       }.to_json
       client.post(url, body: request_body, headers: kbn_headers)
-      puts "Create #{@project_name} user sucessed!"
+      logger.kinfo("Create #{@project_name} user sucessed!")
     end
 
     def self.arguments
@@ -158,7 +157,7 @@ module Kscript
     end
 
     def self.usage
-      "kscript kibana_utils export --host=localhost --index=log-*\nkscript kibana_utils import --file=dashboard.json"
+      "kscript kibana export --host=localhost --index=log-*\nkscript kibana import --file=dashboard.json"
     end
 
     def self.group
@@ -167,6 +166,10 @@ module Kscript
 
     def self.author
       'kk'
+    end
+
+    def self.description
+      'Kibana automation: space, index, user, role management.'
     end
 
     private
@@ -225,9 +228,9 @@ module Kscript
     def handle_error(response, index_name = nil)
       error_message = "Error: #{response.status} - #{response.body}"
       if index_name
-        puts "#{index_name} Failed to create index. #{error_message}"
+        logger.kerror("#{index_name} Failed to create index. #{error_message}")
       else
-        puts "Error fetching indices: #{error_message}"
+        logger.kerror("Error fetching indices: #{error_message}")
       end
     end
   end

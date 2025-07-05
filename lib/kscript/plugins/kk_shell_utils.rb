@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
-# curl to execute this script:
-# curl -sSL https://raw.githubusercontent.com/kevin197011/kscript/main/bin/shell-helper.rb | ruby
+# Copyright (c) 2025 Kk
+#
+# This software is released under the MIT License.
+# https://opensource.org/licenses/MIT
 
 require 'kscript'
-require 'http'
 
 module Kscript
   class KkShellUtils < Base
@@ -14,7 +15,7 @@ module Kscript
 
     # Initialize with shell command to look up
     # @param command [String] command to get help for
-    def initialize(command = nil)
+    def initialize(command = nil, *_args, **_opts)
       @command = command
     end
 
@@ -28,7 +29,7 @@ module Kscript
       if command
         fetch_help
       else
-        puts "Usage: #{$PROGRAM_NAME} <command>"
+        logger.kinfo("Usage: #{$PROGRAM_NAME} <command>")
         exit 1
       end
     end
@@ -46,7 +47,7 @@ module Kscript
     end
 
     def self.usage
-      "kscript shell_helper run 'ls -al'\nkscript shell_helper exec 'echo hello'"
+      "kscript shell run 'ls -al'\nkscript shell exec 'echo hello'"
     end
 
     def self.group
@@ -55,6 +56,10 @@ module Kscript
 
     def self.author
       'kk'
+    end
+
+    def self.description
+      'Query shell command usage and cheatsheets.'
     end
 
     private
@@ -69,16 +74,16 @@ module Kscript
     # @param response [HTTP::Response] response from cht.sh
     def display_result(response)
       if response.status.success?
-        puts response.body
+        logger.kinfo(response.body)
       else
-        puts "Failed to retrieve data: #{response.status}"
+        logger.kerror("Failed to retrieve data: #{response.status}")
       end
     end
 
     # Display error message
     # @param error [StandardError] error to display
     def display_error(error)
-      puts "An error occurred: #{error.message}"
+      logger.kerror("An error occurred: #{error.message}")
     end
   end
 end

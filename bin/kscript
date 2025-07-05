@@ -6,6 +6,7 @@
 
 require 'fileutils'
 require 'kscript'
+require 'io/console'
 
 BIN_DIR = __dir__
 PLUGINS_DIR = File.expand_path('../lib/kscript/plugins', BIN_DIR)
@@ -30,17 +31,20 @@ HELP = <<~HELP
     Use 'kscript <command> --help' for command-specific help.
 HELP
 
-# 解析全局参数
-log_level = nil
-trace_id = nil
+# 全局参数列表
+GLOBAL_FLAGS = %w[--log-level --trace-id --log].freeze
+
+# 解析全局参数（先 shift 掉全局参数和命令名）
 while ARGV[0]&.start_with?('--')
   case ARGV[0]
   when '--log-level'
     ARGV.shift
-    log_level = ARGV.shift
+    ARGV.shift
   when '--trace-id'
     ARGV.shift
-    trace_id = ARGV.shift
+    ARGV.shift
+  when '--log'
+    ARGV.shift
   when '-h', '--help', 'help'
     puts HELP
     exit 0
@@ -56,44 +60,73 @@ end
 
 cmd = ARGV.shift
 
+# 只过滤业务参数（此时 ARGV 只剩业务参数）
+plugin_args = ARGV.reject { |arg| GLOBAL_FLAGS.any? { |flag| arg.start_with?(flag) } }
+
+def color(str, code)
+  "\e[#{code}m#{str}\e[0m"
+end
+
+def cyan(str)
+  color(str, 36)
+end
+
+def green(str)
+  color(str, 32)
+end
+
+def gray(str)
+  color(str, 90)
+end
+
+def bold(str)
+  color(str, 1)
+end
+
 # 新增 list 命令
 if cmd == 'list'
-  puts "\nAvailable commands:"
+  puts "\n#{bold('Available commands:')}\n"
   PLUGIN_INFOS.each do |info|
-    puts "  #{info[:name].to_s.sub(/^kk_/, '').ljust(24)}#{info[:description] || ''}"
+    command = info[:name].to_s.sub(/^kk_/, '')
+    desc = info[:description] || ''
+    usage = begin
+      info[:class].respond_to?(:usage) ? info[:class].usage : nil
+    rescue StandardError
+      nil
+    end
+    print "  #{green(command.ljust(12))}  #{gray(desc)}\n"
+    if usage && !usage.to_s.strip.empty?
+      usage.to_s.split("\n").each_with_index do |line, idx|
+        prefix = idx.zero? ? gray('    usage:') : gray('          ')
+        puts "#{prefix} #{cyan(line.strip)}"
+      end
+    end
+    puts
   end
   exit 0
 end
 
+# 查找插件信息
 plugin_info = PLUGIN_INFOS.find { |info| info[:name].to_s.sub(/^kk_/, '') == cmd }
 
-if plugin_info && ARGV[0] =~ /^(-h|--help|help)$/
-  puts "\nCommand: #{cmd}"
-  puts "Description: #{plugin_info[:description]}" if plugin_info[:description]
-  puts "Group: #{plugin_info[:group]}" if plugin_info[:group]
-  puts "Author: #{plugin_info[:author]}" if plugin_info[:author]
-  puts "\nUsage:"
-  puts "  kscript #{cmd} #{plugin_info[:arguments] || '[args...]'}"
-  puts "\nExample:"
-  puts plugin_info[:usage] if plugin_info[:usage]
-  exit 0
-end
-
-# 查找插件文件，支持 _utils 后缀
-plugin_glob = File.join(PLUGINS_DIR, "kk_#{cmd}*_utils.rb")
-plugin_files = Dir.glob(plugin_glob)
-plugin_file = plugin_files.first
-
-unless plugin_file && File.exist?(plugin_file)
+unless plugin_info
   warn "Unknown command: #{cmd}\n"
   puts HELP
   exit 1
 end
 
-# 传递全局参数到子命令（通过环境变量）
-env = ENV.to_h.dup
-env['KSCRIPT_LOG_LEVEL'] = log_level if log_level
-env['KSCRIPT_TRACE_ID'] = trace_id if trace_id
+klass = plugin_info[:class]
+unless klass
+  warn "Plugin class not found for: #{cmd}\n"
+  exit 1
+end
 
-# 直接用 ruby 执行插件脚本
-exec env, RbConfig.ruby, plugin_file, *ARGV
+# 传递业务参数给插件
+begin
+  instance = klass.new(*plugin_args)
+  instance.run
+rescue ArgumentError => e
+  warn "Argument error: #{e.message}"
+  puts "Usage: kscript #{cmd} #{plugin_info[:arguments] || '[args...]'}"
+  exit 1
+end

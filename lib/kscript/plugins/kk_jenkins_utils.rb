@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
-# curl to execute this script:
-# curl -sSL https://raw.githubusercontent.com/kevin197011/kscript/main/bin/jenkins-job-manager.rb | ruby
+# Copyright (c) 2025 Kk
+#
+# This software is released under the MIT License.
+# https://opensource.org/licenses/MIT
 
 require 'kscript'
 require 'http'
@@ -15,7 +17,7 @@ module Kscript
   class KkJenkinsUtils < Base
     def run
       with_error_handling do
-        puts 'Jenkins job manager executed.'
+        logger.kinfo('Jenkins job manager executed.')
       end
     end
 
@@ -36,7 +38,7 @@ module Kscript
         config_xml = export_job(job_name)
         if config_xml
           File.write("jobs/#{job_name}.xml", config_xml)
-          puts "Exported job: #{job_name}"
+          logger.kinfo("Exported job: #{job_name}")
         end
       end
     end
@@ -47,7 +49,7 @@ module Kscript
         config_xml = File.read(file_path)
         import_or_update_job(job_name, config_xml)
       else
-        puts "Job file #{file_path} does not exist!"
+        logger.kerror("Job file #{file_path} does not exist!")
       end
     end
 
@@ -55,7 +57,7 @@ module Kscript
       job_files = Dir.glob('jobs/*.xml')
       job_files.each do |file_path|
         job_name = File.basename(file_path, '.xml')
-        puts "Importing or updating job: #{job_name}"
+        logger.kinfo("Importing or updating job: #{job_name}")
         config_xml = File.read(file_path)
         import_or_update_job(job_name, config_xml)
       end
@@ -68,11 +70,11 @@ module Kscript
         jobs = JSON.parse(response.body.to_s)['jobs']
         jobs.map { |job| job['name'] }
       else
-        puts "Error fetching job list: #{response.status}"
+        logger.kerror("Error fetching job list: #{response.status}")
         []
       end
     rescue StandardError => e
-      puts "Exception fetching job list: #{e.message}"
+      logger.kerror("Exception fetching job list: #{e.message}")
       []
     end
 
@@ -81,21 +83,21 @@ module Kscript
       response = HTTP.get(url, headers: { 'Authorization' => @auth_header })
       return response.body.to_s if response.status.success?
 
-      puts "Error exporting job #{job_name}: #{response.status}"
+      logger.kerror("Error exporting job #{job_name}: #{response.status}")
       nil
     rescue StandardError => e
-      puts "Exception exporting job #{job_name}: #{e.message}"
+      logger.kerror("Exception exporting job #{job_name}: #{e.message}")
       nil
     end
 
     def import_or_update_job(job_name, config_xml)
       url = "#{@jenkins_url}/job/#{job_name}/config.xml"
-      puts url
+      logger.kinfo(url)
       begin
-        puts "Creating new job #{job_name}"
+        logger.kinfo("Creating new job #{job_name}")
         create_new_job(job_name, config_xml)
       rescue StandardError
-        puts "Updating existing job #{job_name}"
+        logger.kinfo("Updating existing job #{job_name}")
         HTTP.put(url, body: config_xml, headers: {
                    'Authorization' => @auth_header,
                    'Content-Type' => 'application/xml'
@@ -108,7 +110,7 @@ module Kscript
     end
 
     def self.usage
-      "kscript jenkins_job_manager list --host=jenkins.local\nkscript jenkins_job_manager trigger --job=build"
+      "kscript jenkins list --host=jenkins.local\nkscript jenkins trigger --job=build"
     end
 
     def self.group
@@ -117,6 +119,10 @@ module Kscript
 
     def self.author
       'kk'
+    end
+
+    def self.description
+      'Jenkins job export/import automation.'
     end
 
     private
@@ -128,9 +134,9 @@ module Kscript
                              'Content-Type' => 'application/xml'
                            })
       if response.status.success?
-        puts "Successfully created new job #{job_name}"
+        logger.kinfo("Successfully created new job #{job_name}")
       else
-        puts "Failed to create job #{job_name}: #{response.status}"
+        logger.kerror("Failed to create job #{job_name}: #{response.status}")
       end
     end
   end

@@ -6,7 +6,11 @@ module Kscript
 
     def self.load_all
       Dir.glob(File.join(PLUGIN_DIR, 'kk_*.rb')).sort.each do |file|
-        require file
+        # 解析出类名
+        basename = File.basename(file, '.rb')
+        class_name = basename.split('_').map(&:capitalize).join
+        # 只在未定义时 require
+        require file unless Kscript.const_defined?(class_name, false)
       end
     end
 

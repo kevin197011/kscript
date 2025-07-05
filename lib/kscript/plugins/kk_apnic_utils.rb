@@ -1,27 +1,27 @@
 # frozen_string_literal: true
 
-# curl to execute this script:
-# curl -sSL https://raw.githubusercontent.com/kevin197011/kscript/main/bin/apnic-ip-range.rb | ruby
+# Copyright (c) 2025 Kk
+#
+# This software is released under the MIT License.
+# https://opensource.org/licenses/MIT
 
 require 'kscript'
-require 'http'
-require 'uri'
-require 'kscript/base'
 
 module Kscript
   class KkApnicUtils < Base
     attr_reader :country_sn, :cache_file
 
     # Initialize class instance, set country code and cache file path
-    def initialize(country_sn = 'CN')
+    def initialize(country_sn = 'CN', *_args, **opts)
+      super(**opts.merge(service: 'kk_apnic'))
       @country_sn = country_sn
-      @cache_file = RUBY_PLATFORM.match(/x86_64-linux/) ? '/tmp/apnic.txt' : 'apnic.txt'
+      @cache_file = RUBY_PLATFORM.match?(/(linux|darwin)/) ? '/tmp/apnic.txt' : 'apnic.txt'
     end
 
     # Download data from APNIC or read from cache
     def download_data
       if File.exist?(cache_file) && File.size?(cache_file)
-        puts "Using cached data from #{cache_file}"
+        logger.kinfo("Using cached data from #{cache_file}")
       else
         url = 'https://ftp.apnic.net/stats/apnic/delegated-apnic-latest'
         response = HTTP.get(url)
@@ -29,7 +29,7 @@ module Kscript
         raise "Failed to download the APNIC data. HTTP Status: #{response.status}" unless response.status.success?
 
         File.write(cache_file, response.body.to_s)
-        puts "Data downloaded and saved to #{cache_file}"
+        logger.kinfo("Data downloaded and saved to #{cache_file}")
       end
     end
 
@@ -48,6 +48,7 @@ module Kscript
         ip_ranges << "#{val[:ip]}/#{netmask}"
       end
 
+      logger.kinfo('IP ranges', ip_ranges: ip_ranges)
       ip_ranges
     end
 
@@ -68,7 +69,7 @@ module Kscript
     end
 
     def self.usage
-      "kscript apnic_ip_range CN\nkscript apnic_ip_range US"
+      "kscript apnic CN\nkscript apnic US"
     end
 
     def self.group
@@ -77,6 +78,10 @@ module Kscript
 
     def self.author
       'kk'
+    end
+
+    def self.description
+      'Get APNIC IPv4 ranges for a country.'
     end
   end
 end

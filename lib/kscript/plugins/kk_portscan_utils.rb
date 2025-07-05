@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
-# curl to execute this script:
-# curl -sSL https://raw.githubusercontent.com/kevin197011/kscript/main/bin/port-scanner.rb | ruby
+# Copyright (c) 2025 Kk
+#
+# This software is released under the MIT License.
+# https://opensource.org/licenses/MIT
 
 require 'kscript'
 require 'socket'
@@ -15,7 +17,7 @@ module Kscript
     # @param host [String] target host to scan
     # @param ports [Array<Integer>] list of ports to scan
     # @param thread_count [Integer] number of concurrent threads
-    def initialize(target = nil, ports = (1..1024), **opts)
+    def initialize(target = nil, ports = (1..1024), *_args, **opts)
       super(**opts.merge(service: 'kk_port_scanner'))
       @target = target
       @ports = ports.is_a?(Range) ? ports : (1..1024)
@@ -29,11 +31,11 @@ module Kscript
 
     # Execute port scanning using multiple threads
     def scan
-      logger.info("Scanning #{@target} ports #{@ports}")
+      logger.kinfo("Scanning #{@target} ports #{@ports}")
       @ports.each do |port|
         Socket.tcp(@target, port, connect_timeout: 0.5) do |_sock|
-          logger.info('Port open', port: port)
-          puts "Port #{port} is open"
+          logger.kinfo('Port open', port: port)
+          logger.kinfo("Port #{port} is open")
         end
       rescue Errno::ECONNREFUSED, Errno::ETIMEDOUT, SocketError
         # closed or filtered
@@ -49,7 +51,7 @@ module Kscript
     end
 
     def self.usage
-      "kscript port_scanner 192.168.1.1\nkscript port_scanner example.com --ports=22,80,443"
+      "kscript portscan 192.168.1.1\nkscript portscan example.com --ports=22,80,443"
     end
 
     def self.group
@@ -67,15 +69,13 @@ module Kscript
     def scan_port(port)
       Timeout.timeout(1) do # Set connection timeout to 1 second
         s = TCPSocket.new(@host, port)
-        puts " [+] Port #{port} is open"
+        logger.kinfo("Port #{port} is open")
         s.close
       end
     rescue Timeout::Error
       # Connection timeout, ignore
-    rescue Errno::ECONNREFUSED, Errno::EHOSTUNREACH, Errno::ETIMEDOUT
-      # Handle connection refused, host unreachable or connection timeout errors
     rescue StandardError => e
-      puts " [-] Error scanning port #{port}: #{e.message}"
+      logger.kerror("Error scanning port #{port}: #{e.message}")
     end
   end
 end

@@ -5,9 +5,6 @@
 # This software is released under the MIT License.
 # https://opensource.org/licenses/MIT
 
-# curl to execute this script:
-# curl -sSL https://raw.githubusercontent.com/kevin197011/kscript/main/bin/mac-top-usage.rb | ruby
-
 require 'kscript'
 
 # 彩色输出定义
@@ -26,7 +23,7 @@ module Kscript
     end
 
     def print_report
-      puts "System Resource Top Report - #{Time.now.strftime('%Y-%m-%d %H:%M:%S')}"
+      logger.kinfo("System Resource Top Report - #{Time.now.strftime('%Y-%m-%d %H:%M:%S')}")
       print_header('Top 10 Processes by CPU Usage')
       print_process_list(:cpu)
       print_header('Top 10 Processes by Memory Usage')
@@ -34,10 +31,10 @@ module Kscript
     end
 
     def print_header(title)
-      puts
-      puts '==============================='
-      puts " #{title}"
-      puts '==============================='
+      logger.kinfo('')
+      logger.kinfo('===============================')
+      logger.kinfo(" #{title}")
+      logger.kinfo('===============================')
     end
 
     def print_process_list(sort_field)
@@ -46,9 +43,9 @@ module Kscript
       processes = lines.map { |line| line.split(/\s+/, 11) }
       index = sort_field == :cpu ? 2 : 3
       top = processes.sort_by { |p| -p[index].to_f }.first(10)
-      printf "%-10s %-8s %-5s %-5s %-10s\n", 'USER', 'PID', '%CPU', '%MEM', 'COMMAND'
+      logger.kinfo(format('%-10s %-8s %-5s %-5s %-10s', 'USER', 'PID', '%CPU', '%MEM', 'COMMAND'))
       top.each do |p|
-        printf "%-10s %-8s %-5s %-5s %-10s\n", p[0], p[1], p[2], p[3], p[10][0..30]
+        logger.kinfo(format('%-10s %-8s %-5s %-5s %-10s', p[0], p[1], p[2], p[3], p[10][0..30]))
       end
     end
 
@@ -61,7 +58,7 @@ module Kscript
     end
 
     def self.usage
-      'kscript mac_top_usage'
+      'kscript top'
     end
 
     def self.group

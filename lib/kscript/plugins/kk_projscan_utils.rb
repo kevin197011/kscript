@@ -1,13 +1,16 @@
 # frozen_string_literal: true
 
-require 'kscript'
+# Copyright (c) 2025 Kk
+#
+# This software is released under the MIT License.
+# https://opensource.org/licenses/MIT
 
-# curl to execute this script:
-# curl -sSL https://raw.githubusercontent.com/kevin197011/kscript/main/bin/project-scanner.rb | ruby
+require 'kscript'
+require 'json'
 
 module Kscript
   class KkProjscanUtils < Base
-    def initialize(src_path = nil, **opts)
+    def initialize(src_path = nil, *_args, **opts)
       super(**opts.merge(service: 'kk_project_scanner'))
       @src_path = src_path || File.expand_path('~/projects/src')
     end
@@ -33,7 +36,7 @@ module Kscript
     end
 
     def self.usage
-      "kscript project_scanner ~/projects/src\nkscript project_scanner /opt --type=go"
+      "kscript projscan ~/projects/src\nkscript projscan /opt --type=go"
     end
 
     def self.group
@@ -49,7 +52,7 @@ module Kscript
     def ensure_directory_exists
       return if Dir.exist?(@src_path)
 
-      logger.error("Source directory not found: #{@src_path}")
+      logger.kerror("Source directory not found: #{@src_path}")
       exit 1
     end
 
@@ -80,8 +83,8 @@ module Kscript
     end
 
     def display_projects(projects)
-      logger.info('Scanned projects', count: projects.size)
-      puts JSON.pretty_generate(projects)
+      logger.kinfo('Scanned projects', count: projects.size)
+      logger.kinfo('Projects', projects: JSON.pretty_generate(projects))
     end
   end
 end

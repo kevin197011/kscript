@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
-# curl to execute this script:
-# curl -sSL https://raw.githubusercontent.com/kevin197011/kscript/main/bin/ffmpeg-installer.rb | ruby
+# Copyright (c) 2025 Kk
+#
+# This software is released under the MIT License.
+# https://opensource.org/licenses/MIT
 
 require 'kscript'
 
@@ -14,7 +16,7 @@ module Kscript
     end
 
     def install
-      puts 'FFmpeg installer executed.'
+      logger.kinfo('FFmpeg installer executed.')
     end
 
     def self.arguments
@@ -22,7 +24,7 @@ module Kscript
     end
 
     def self.usage
-      "kscript ffmpeg_installer 6.0\nkscript ffmpeg_installer latest"
+      "kscript ffmpeg 6.0\nkscript ffmpeg latest"
     end
 
     def self.group
@@ -31,6 +33,10 @@ module Kscript
 
     def self.author
       'kk'
+    end
+
+    def self.description
+      'Install and verify FFmpeg on Linux.'
     end
 
     private
@@ -68,7 +74,7 @@ module Kscript
 
     # Update system package lists
     def update_system
-      puts '👉 Updating system packages...'
+      logger.kinfo('👉 Updating system packages...')
       case @os_info[:family]
       when 'redhat'
         run_command('sudo yum update -y')
@@ -87,19 +93,19 @@ module Kscript
 
     # Install EPEL repository
     def install_epel
-      puts '👉 Installing EPEL repository...'
+      logger.kinfo('👉 Installing EPEL repository...')
       run_command('sudo yum install -y epel-release')
     end
 
     # Install RPM Fusion repository
     def install_rpm_fusion
-      puts "👉 Installing RPM Fusion repository for EL#{@os_info[:version]}..."
+      logger.kinfo("👉 Installing RPM Fusion repository for EL#{@os_info[:version]}...")
       run_command("sudo yum install -y https://download1.rpmfusion.org/free/el/rpmfusion-free-release-#{@os_info[:version]}.noarch.rpm")
     end
 
     # Install FFmpeg packages
     def install_ffmpeg
-      puts '👉 Installing FFmpeg...'
+      logger.kinfo('👉 Installing FFmpeg...')
       case @os_info[:family]
       when 'redhat'
         run_command('sudo yum install -y ffmpeg ffmpeg-devel')
@@ -112,22 +118,22 @@ module Kscript
 
     # Verify FFmpeg installation
     def verify_installation
-      puts '👉 Verifying FFmpeg installation...'
+      logger.kinfo('👉 Verifying FFmpeg installation...')
       run_command('ffmpeg -version')
-      puts '✅ FFmpeg installation completed successfully!'
+      logger.kinfo('✅ FFmpeg installation completed successfully!')
     end
 
     # Execute shell command
     # @param cmd [String] command to execute
     def run_command(cmd)
-      puts "👉 Running: #{cmd}"
+      logger.kinfo("👉 Running: #{cmd}")
       system(cmd) || fail_with_error("Command failed: #{cmd}")
     end
 
     # Display error and exit
     # @param msg [String] error message
     def fail_with_error(msg)
-      puts "❌ #{msg}"
+      logger.kerror("❌ #{msg}")
       exit 1
     end
   end

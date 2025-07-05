@@ -1,9 +1,11 @@
 # frozen_string_literal: true
 
-require 'kscript'
+# Copyright (c) 2025 Kk
+#
+# This software is released under the MIT License.
+# https://opensource.org/licenses/MIT
 
-# curl to execute this script:
-# curl -sSL https://raw.githubusercontent.com/kevin197011/kscript/main/bin/wireguard-acl.rb | ruby
+require 'kscript'
 
 module Kscript
   class KkWgAclUtils < Base
@@ -27,7 +29,7 @@ module Kscript
     end
 
     def self.usage
-      "kscript wireguard_acl add --ip=10.0.0.2\nkscript wireguard_acl list"
+      "kscript wg_acl add --ip=10.0.0.2\nkscript wg_acl list"
     end
 
     def self.group
@@ -36,6 +38,10 @@ module Kscript
 
     def self.author
       'kk'
+    end
+
+    def self.description
+      'Manage WireGuard firewall ACL rules.'
     end
 
     private
@@ -60,9 +66,9 @@ module Kscript
     def add_whitelist_rules
       ALLOWED_IPS.each do |ip|
         if rule_exists?(ip, WIREGUARD_PORT)
-          puts "✅ Rule exists: #{ip} → #{WIREGUARD_PORT}, skipping."
+          logger.kinfo("✅ Rule exists: #{ip} → #{WIREGUARD_PORT}, skipping.")
         else
-          puts "👉 Adding rule: allow #{ip} to access port #{WIREGUARD_PORT}"
+          logger.kinfo("👉 Adding rule: allow #{ip} to access port #{WIREGUARD_PORT}")
           system("sudo ufw allow from #{ip} to any port #{WIREGUARD_PORT}")
         end
       end
@@ -72,18 +78,18 @@ module Kscript
     def ensure_firewall_enabled
       ufw_status = `sudo ufw status`.strip
       if ufw_status.start_with?('Status: inactive')
-        puts '🔧 UFW is currently disabled, enabling...'
+        logger.kinfo('🔧 UFW is currently disabled, enabling...')
         system('sudo ufw enable')
       else
-        puts '✅ UFW is enabled.'
+        logger.kinfo('✅ UFW is enabled.')
       end
     end
 
     # Display current firewall rules
     def display_current_rules
-      puts "\n📋 Current firewall rules:"
+      logger.kinfo("\n📋 Current firewall rules:")
       system('sudo ufw status verbose')
-      puts "\n✅ Firewall rules update completed!"
+      logger.kinfo("\n✅ Firewall rules update completed!")
     end
   end
 end

@@ -1,15 +1,17 @@
 # frozen_string_literal: true
 
-require 'kscript'
+# Copyright (c) 2025 Kk
+#
+# This software is released under the MIT License.
+# https://opensource.org/licenses/MIT
 
-# curl to execute this script:
-# curl -sSL https://raw.githubusercontent.com/kevin197011/kscript/main/bin/rename.rb | ruby
+require 'kscript'
 
 module Kscript
   class KkRenameUtils < Base
     attr_reader :source_pattern, :target_pattern, :directory
 
-    def initialize(source_pattern = nil, target_pattern = nil, directory = Dir.pwd, **opts)
+    def initialize(source_pattern = nil, target_pattern = nil, directory = Dir.pwd, *_args, **opts)
       super(**opts.merge(service: 'kk_rename'))
       @source_pattern = source_pattern
       @target_pattern = target_pattern
@@ -44,6 +46,10 @@ module Kscript
       'kk'
     end
 
+    def self.description
+      'Batch rename files by pattern.'
+    end
+
     private
 
     def process_file(filename)
@@ -62,15 +68,15 @@ module Kscript
     def generate_new_name(filename)
       eval("\"#{filename}\"".gsub(/#{@source_pattern}/, @target_pattern))
     rescue StandardError => e
-      logger.error("Error processing #{filename}: #{e.message}")
+      logger.kerror("Error processing #{filename}: #{e.message}")
       nil
     end
 
     def rename_file(old_name, new_name)
       File.rename(File.join(@directory, old_name), File.join(@directory, new_name))
-      logger.info("Renamed: #{old_name} -> #{new_name}")
+      logger.kinfo("Renamed: #{old_name} -> #{new_name}")
     rescue StandardError => e
-      logger.error("Error renaming #{old_name}: #{e.message}")
+      logger.kerror("Error renaming #{old_name}: #{e.message}")
     end
   end
 end

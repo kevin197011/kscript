@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-# curl to execute this script:
-# curl -sSL https://raw.githubusercontent.com/kevin197011/kscript/main/bin/source-cleaner.rb | ruby
+# Copyright (c) 2025 Kk
+#
+# This software is released under the MIT License.
+# https://opensource.org/licenses/MIT
 
 require 'kscript'
-require 'fileutils'
-require 'kscript/base'
 
 module Kscript
   class KkCleanerUtils < Base
@@ -16,7 +16,7 @@ module Kscript
     # Initialize the cleaner with path and retention settings
     # @param source_path [String] path to source code directory
     # @param retain_count [Integer] number of versions to keep
-    def initialize(source_path = '/data/sources/*/**', retain_count = DEFAULT_RETAIN_VERSIONS, **opts)
+    def initialize(source_path = '/data/sources/*/**', retain_count = DEFAULT_RETAIN_VERSIONS, *_args, **opts)
       super(**opts.merge(service: 'kk_source_cleaner'))
       @source_path = source_path
       @retain_count = retain_count
@@ -49,6 +49,10 @@ module Kscript
 
     def self.author
       'kk'
+    end
+
+    def self.description
+      'Clean old source code versions, keep N latest.'
     end
 
     private
