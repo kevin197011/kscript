@@ -5,9 +5,26 @@
 # This software is released under the MIT License.
 # https://opensource.org/licenses/MIT
 
+# Ruby 标准库
 require 'json'
 require 'logger'
 require 'securerandom'
+require 'yaml'
+require 'fileutils'
+require 'base64'
+require 'rexml/document'
+require 'net/http'
+require 'timeout'
+require 'socket'
+require 'open3'
+require 'openssl'
+
+# 第三方 gem
+require 'http'
+require 'bcrypt'
+require 'nokogiri'
+require 'thor'
+
 require 'kscript/plugins'
 require 'kscript/base'
 require 'kscript/logger'
