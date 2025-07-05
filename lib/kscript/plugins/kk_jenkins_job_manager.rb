@@ -8,7 +8,7 @@ require 'base64'
 require 'rexml/document'
 require 'json'
 require 'fileutils'
-require_relative '../base' unless defined?(Kscript::Base)
+require 'kscript/base'
 
 module Kscript
   class KkJenkinsJobManager < Base

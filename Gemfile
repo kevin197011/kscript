@@ -1,6 +1,3 @@
 # frozen_string_literal: true
 
-source 'https://rubygems.org'
-
-gem 'http'
-gem 'rubocop'
+# See kscript.gemspec for gem dependencies

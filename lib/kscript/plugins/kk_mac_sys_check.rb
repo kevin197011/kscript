@@ -8,7 +8,7 @@
 # curl to execute this script:
 # curl -sSL https://raw.githubusercontent.com/kevin197011/kscript/main/bin/mac-sys-check.rb | ruby
 
-require_relative '../base' unless defined?(Kscript::Base)
+require 'kscript/base'
 
 module Kscript
   class KkMacSysCheck < Base

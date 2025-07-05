@@ -8,7 +8,7 @@ module Kscript
       DEFAULT_PATH = File.expand_path('~/.kscriptrc')
 
       def self.load
-        @config ||= new
+        @load ||= new
       end
 
       def initialize

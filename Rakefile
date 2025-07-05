@@ -1,24 +1,32 @@
 # frozen_string_literal: true
 
-# Copyright (c) 2024 Kk
+# Copyright (c) 2025 kk
 #
 # This software is released under the MIT License.
 # https://opensource.org/licenses/MIT
 
 require 'time'
+require 'rake'
+require 'bundler/gem_tasks'
 
-# Define default task
-task default: %w[fmt push]
+task default: %w[push]
 
-# Task to format the code with RuboCop
-task :fmt do
-  system 'rubocop -A' # Automatically fix offenses
+task :push do
+  system <<-SHELL
+    rubocop -A
+    git update-index --chmod=+x push
+    git add .
+    git commit -m "Update #{Time.now}"
+    git pull
+    git push origin main
+  SHELL
 end
 
-# Task to commit and push changes to Git
-task :push do
-  system 'git add .' # Stage all changes
-  system "git commit -m 'Update #{Time.now}.'" # Commit with a timestamp message
-  system 'git pull' # Pull the latest changes from the repository
-  system 'git push origin main' # Push changes to the main branch
+# 其他自定义任务可在此添加
+task :build do
+  system <<-SHELL
+    gem build kscript.gemspec
+    gem install kscript-*.gem
+    kscript --help
+  SHELL
 end

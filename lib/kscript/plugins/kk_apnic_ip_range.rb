@@ -5,7 +5,7 @@
 
 require 'http'
 require 'uri'
-require_relative '../base' unless defined?(Kscript::Base)
+require 'kscript/base'
 
 module Kscript
   class KkApnicIpRange < Base

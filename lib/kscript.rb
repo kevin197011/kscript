@@ -10,12 +10,12 @@ require 'logger'
 require 'securerandom'
 require 'kscript/plugins'
 
-module Kscript
-  autoload :VERSION, 'kscript/version'
-  autoload :Logger,  'kscript/logger'
-  autoload :Base,    'kscript/base'
-  autoload :Utils,   'kscript/utils'
+require 'kscript/base'
+require 'kscript/logger'
+require 'kscript/utils'
+require 'kscript/version'
 
+module Kscript
   # fluentd 风格插件注册机制
   module Plugin
     @plugins = {}
@@ -39,7 +39,7 @@ module Kscript
   # 自动加载 plugins 目录下所有插件（仅开发环境）
   if File.directory?(File.expand_path('kscript/plugins', __dir__))
     Dir[File.expand_path('kscript/plugins/*.rb', __dir__)].each do |plugin|
-      require_relative plugin.sub(File.expand_path(__dir__) + '/', '')
+      require_relative plugin.sub("#{File.expand_path(__dir__)}/", '')
     end
   end
 

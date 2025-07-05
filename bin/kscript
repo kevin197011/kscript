@@ -5,7 +5,7 @@
 # 支持全局参数 --log-level, --trace-id
 
 require 'fileutils'
-require_relative '../lib/kscript'
+require 'kscript'
 
 BIN_DIR = __dir__
 PLUGINS_DIR = File.expand_path('../lib/kscript/plugins', BIN_DIR)
@@ -33,7 +33,7 @@ HELP
 # 解析全局参数
 log_level = nil
 trace_id = nil
-while ARGV[0] && ARGV[0].start_with?('--')
+while ARGV[0]&.start_with?('--')
   case ARGV[0]
   when '--log-level'
     ARGV.shift

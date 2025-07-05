@@ -8,7 +8,7 @@
 # curl to execute this script:
 # curl -sSL https://raw.githubusercontent.com/kevin197011/kscript/main/bin/mac-top-usage.rb | ruby
 
-require_relative '../base' unless defined?(Kscript::Base)
+require 'kscript/base'
 
 # 彩色输出定义
 RED    = "\e[1;31m"

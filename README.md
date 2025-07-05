@@ -4,6 +4,23 @@ A collection of Ruby utility scripts for various system administration and devel
 
 ## Installation
 
+### Gem install (recommended)
+
+```bash
+gem install kscript
+```
+
+Or from local source:
+
+```bash
+git clone https://github.com/kevin197011/kscript.git
+cd kscript
+gem build kscript.gemspec
+gem install ./kscript-*.gem
+```
+
+### Bundler (for development)
+
 ```bash
 git clone https://github.com/kevin197011/kscript.git
 cd kscript
@@ -12,7 +29,13 @@ bundle install
 
 ## Usage
 
-Most scripts can be executed directly via curl:
+Most scripts can be executed directly via command line after gem install:
+
+```bash
+kscript SCRIPT_NAME [args]
+```
+
+Or, for legacy usage via curl:
 
 ```bash
 curl -sSL https://raw.githubusercontent.com/kevin197011/kscript/main/bin/SCRIPT_NAME.rb | ruby
@@ -86,4 +109,34 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin feature/my-new-feature`)
 5. Create new Pull Request
+
+## Unified CLI Usage
+
+After gem install, you can use the unified kk command:
+
+```bash
+kk <command> [args...]
+
+# List all available tools
+kk --help
+
+# Example: scan ports
+kk port-scanner 192.168.1.1
+
+# Example: check macOS system
+kk mac-sys-check
+```
+
+Each subcommand supports --help for its own usage.
+
+## Global Configuration
+
+You can set global options for all kk tools in `~/.kscriptrc` (YAML format):
+
+```yaml
+log_level: debug
+trace_id: my-global-trace
+```
+
+- These settings will be used by default for all commands unless overridden by CLI options or environment variables.
 

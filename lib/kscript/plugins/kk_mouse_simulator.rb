@@ -3,7 +3,7 @@
 # curl to execute this script:
 # curl -sSL https://raw.githubusercontent.com/kevin197011/kscript/main/bin/mouse-simulator.rb | ruby
 
-require_relative '../base' unless defined?(Kscript::Base)
+require 'kscript/base'
 require 'fiddle'
 require 'fiddle/import'
 

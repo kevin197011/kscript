@@ -8,7 +8,7 @@
 # curl to execute this script:
 # curl -sSL https://raw.githubusercontent.com/kevin197011/kscript/main/bin/mac-optimize.rb | ruby
 
-require_relative '../base' unless defined?(Kscript::Base)
+require 'kscript/base'
 require 'open3'
 
 module Kscript

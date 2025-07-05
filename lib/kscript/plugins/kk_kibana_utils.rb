@@ -6,7 +6,7 @@
 require 'http'
 require 'json'
 require 'securerandom'
-require_relative '../base' unless defined?(Kscript::Base)
+require 'kscript/base'
 
 module Kscript
   class KkKibanaUtils < Base

@@ -3,7 +3,7 @@
 # curl to execute this script:
 # curl -sSL https://raw.githubusercontent.com/kevin197011/kscript/main/bin/windows-font-enhancer.rb | ruby
 
-require_relative '../base' unless defined?(Kscript::Base)
+require 'kscript/base'
 require 'win32/registry'
 require 'fileutils'
 require 'open-uri'

@@ -27,9 +27,9 @@ Gem::Specification.new do |spec|
   spec.require_paths = ['lib']
 
   # Runtime dependencies
-  spec.add_dependency 'http', '>= 4.0'
+  spec.add_dependency 'http', '~> 4.0'
 
   # Development dependencies
-  spec.add_development_dependency 'rubocop', '>= 1.0'
+  spec.add_development_dependency 'rubocop', '~> 1.0'
   spec.metadata['rubygems_mfa_required'] = 'true'
 end
