@@ -86,7 +86,7 @@ module Kscript
         group_names.each_with_index do |group, idx|
           color_code = group_colors[idx % group_colors.size]
           group_label = color("[#{group.capitalize}]", color_code)
-          puts "#{group_label}"
+          puts group_label
           puts color('─' * 80, 90)
           grouped[group].each do |info|
             command = info[:name].to_s.sub(/^kk_/, '')
@@ -105,7 +105,7 @@ module Kscript
             end
             puts gray("    args:  #{arguments}") if arguments && !arguments.to_s.strip.empty?
             puts gray("    by:    #{author}") if author && !author.to_s.strip.empty?
-            puts gray('    ' + ('-' * 60))
+            puts gray("    #{'-' * 60}")
           end
           puts
         end
