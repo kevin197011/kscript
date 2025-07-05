@@ -6,5 +6,5 @@
 # https://opensource.org/licenses/MIT
 
 module Kscript
-  VERSION = '1.0.2'
+  VERSION = '1.0.3'
 end
