@@ -27,7 +27,9 @@ Gem::Specification.new do |spec|
   spec.require_paths = ['lib']
 
   # Runtime dependencies
+  spec.add_dependency 'bcrypt', '>= 3.1', '< 4.0'
   spec.add_dependency 'http', '>= 4.0', '< 6.0'
+  spec.add_dependency 'nokogiri', '>= 1.13', '< 2.0'
   spec.add_dependency 'thor', '1.3.2'
 
   # Development dependencies
