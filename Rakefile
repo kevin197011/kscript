@@ -27,7 +27,7 @@ task :dev do
   sh <<-SHELL
     gem uninstall kscript -aIx
     gem build kscript.gemspec
-    gem install kscript-*.gem
+    gem install kscript-#{Kscript::VERSION}.gem
     kscript help
     kscript list
     kscript version

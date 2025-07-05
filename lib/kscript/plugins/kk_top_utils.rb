@@ -7,13 +7,6 @@
 
 require 'kscript'
 
-# 彩色输出定义
-RED    = "\e[1;31m"
-GREEN  = "\e[1;32m"
-YELLOW = "\e[1;33m"
-CYAN   = "\e[1;36m"
-NC     = "\e[0m" # No Color
-
 module Kscript
   class KkTopUtils < Base
     def run

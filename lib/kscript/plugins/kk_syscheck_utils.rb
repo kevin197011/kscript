@@ -24,20 +24,33 @@ module Kscript
       logger.kinfo("📅 Date Time: #{Time.now}")
       logger.kinfo('')
 
-      # macOS ps command for process monitoring
-      cpu_cmd = 'ps aux | sort -nrk 3 | head -n 10'
-      mem_cmd = 'ps aux | sort -nrk 4 | head -n 10'
+      # CPU Usage
+      logger.kinfo('===============================')
+      logger.kinfo(' CPU Usage (Top 10)')
+      logger.kinfo('===============================')
+      cpu_output = `ps aux | sort -nrk 3 | head -n 10`
+      logger.kinfo(cpu_output)
 
-      run('CPU Usage (Top 10)', cpu_cmd)
-      run('Memory Usage (Top 10)', mem_cmd)
+      # Memory Usage
+      logger.kinfo('===============================')
+      logger.kinfo(' Memory Usage (Top 10)')
+      logger.kinfo('===============================')
+      mem_output = `ps aux | sort -nrk 4 | head -n 10`
+      logger.kinfo(mem_output)
 
+      # GPU Usage
       if `which powermetrics`.strip.empty?
         logger.kinfo("\n👉 GPU Usage:")
         logger.kwarn('⚠️ powermetrics not installed, please run: xcode-select --install')
       else
-        run('GPU Usage', 'powermetrics --samplers gpu_power -n 1', sudo: true)
+        logger.kinfo('===============================')
+        logger.kinfo(' GPU Usage')
+        logger.kinfo('===============================')
+        gpu_output = `sudo powermetrics --samplers gpu_power -n 1 2>/dev/null`
+        logger.kinfo(gpu_output)
       end
 
+      # Network Connections
       logger.kinfo("\n👉 Top 10 Processes by Network Connections:")
       lsof_output = `lsof -i -nP | grep ESTABLISHED`
       counts = Hash.new(0)
@@ -49,6 +62,7 @@ module Kscript
         logger.kinfo("#{proc}: #{count} connections")
       end
 
+      # System Overview
       logger.kinfo("\n👉 System Overview:")
       cpu_core = `sysctl -n hw.ncpu`.strip
       mem_size = `sysctl -n hw.memsize`.to_i / 1024 / 1024 / 1024
