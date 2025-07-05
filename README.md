@@ -1,6 +1,17 @@
 # kscript
+```
+______                     _____        _____
+___  /________________________(_)_________  /_
+__  //_/_  ___/  ___/_  ___/_  /___  __ \\  __/
+_  ,<  _(__  )/ /__ _  /   _  / __  /_/ / /_
+/_/|_| /____/ \\___/ /_/    /_/  _  .___/\\__/
+                                /_/
+```
 
 A collection of Ruby utility scripts for various system administration and development tasks.
+
+[![Gem Version](https://img.shields.io/gem/v/kscript)](https://rubygems.org/gems/kscript)
+[![Ruby](https://github.com/kevin197011/kscript/actions/workflows/gem-push.yml/badge.svg)](https://github.com/kevin197011/kscript/actions/workflows/gem-push.yml)
 
 ## Installation
 
