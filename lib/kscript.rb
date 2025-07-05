@@ -5,11 +5,46 @@
 # This software is released under the MIT License.
 # https://opensource.org/licenses/MIT
 
+require 'json'
+require 'logger'
+require 'securerandom'
+require 'kscript/plugins'
+
 module Kscript
+  autoload :VERSION, 'kscript/version'
+  autoload :Logger,  'kscript/logger'
+  autoload :Base,    'kscript/base'
+  autoload :Utils,   'kscript/utils'
+
+  # fluentd 风格插件注册机制
+  module Plugin
+    @plugins = {}
+    class << self
+      attr_reader :plugins
+
+      def register(name, klass)
+        @plugins[name.to_sym] = klass
+      end
+
+      def [](name)
+        @plugins[name.to_sym]
+      end
+
+      def all
+        @plugins
+      end
+    end
+  end
+
+  # 自动加载 plugins 目录下所有插件（仅开发环境）
+  if File.directory?(File.expand_path('kscript/plugins', __dir__))
+    Dir[File.expand_path('kscript/plugins/*.rb', __dir__)].each do |plugin|
+      require_relative plugin.sub(File.expand_path(__dir__) + '/', '')
+    end
+  end
+
+  Kscript::PluginLoader.load_all
+
   class Error < StandardError; end
   # Your code goes here...
-end
-
-Dir.glob(File.join(File.dirname(__FILE__), 'kscript/*.rb')).each do |r|
-  require_relative "kscript/#{File.basename(r, '.rb')}"
 end
