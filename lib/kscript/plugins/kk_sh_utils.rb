@@ -6,7 +6,6 @@
 # https://opensource.org/licenses/MIT
 
 require 'kscript'
-require 'nokogiri'
 
 module Kscript
   class KkShUtils < Base

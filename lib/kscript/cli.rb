@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 require 'kscript'
-require 'io/console'
 require 'kscript/banner'
-require 'thor'
 
 module Kscript
   class CLI < Thor

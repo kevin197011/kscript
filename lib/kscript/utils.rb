@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-require 'yaml'
-require 'fileutils'
-
 module Kscript
   module Utils
     class Config

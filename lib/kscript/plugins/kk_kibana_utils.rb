@@ -6,7 +6,6 @@
 # https://opensource.org/licenses/MIT
 
 require 'kscript'
-require 'securerandom'
 
 module Kscript
   class KkKibanaUtils < Base

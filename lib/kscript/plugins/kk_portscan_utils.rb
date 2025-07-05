@@ -6,8 +6,6 @@
 # https://opensource.org/licenses/MIT
 
 require 'kscript'
-require 'socket'
-require 'timeout'
 
 module Kscript
   class KkPortscanUtils < Base

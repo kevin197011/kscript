@@ -6,7 +6,6 @@
 # https://opensource.org/licenses/MIT
 
 require 'kscript'
-require 'bcrypt'
 
 module Kscript
   class KkWgPassUtils < Base

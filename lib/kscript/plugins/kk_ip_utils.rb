@@ -7,9 +7,6 @@
 
 require 'kscript'
 
-require 'http'
-require 'json'
-
 module Kscript
   class KkIpUtils < Base
     IP_API_BASE_URL = 'http://ip-api.com/json'

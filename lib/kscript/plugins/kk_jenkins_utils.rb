@@ -6,12 +6,6 @@
 # https://opensource.org/licenses/MIT
 
 require 'kscript'
-require 'http'
-require 'base64'
-require 'rexml/document'
-require 'json'
-require 'fileutils'
-require 'kscript/base'
 
 module Kscript
   class KkJenkinsUtils < Base

@@ -6,7 +6,6 @@
 # https://opensource.org/licenses/MIT
 
 require 'kscript'
-require 'open3'
 
 module Kscript
   class KkOptimizeUtils < Base

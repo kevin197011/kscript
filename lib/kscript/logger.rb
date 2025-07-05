@@ -55,7 +55,7 @@ module Kscript
       @logger.send(level, entry.to_json)
     end
 
-    # 极客风格终端输出
+    # 终端输出
     def klog(level, message, context = {})
       if human_output?
         puts "[#{level.to_s.upcase}] #{message} #{context.map { |k, v| "#{k}=#{v}" }.join(' ')}".strip
