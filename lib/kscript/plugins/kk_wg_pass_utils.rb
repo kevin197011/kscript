@@ -9,9 +9,8 @@ require 'kscript'
 
 module Kscript
   class KkWgPassUtils < Base
-    def initialize(length = 32, *_args, **opts)
-      super(**opts.merge(service: 'kk_wg_pass'))
-      @length = length.to_i
+    def initialize(*args, **opts)
+      super(*args, **opts)
     end
 
     def run

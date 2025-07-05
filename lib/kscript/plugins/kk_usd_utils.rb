@@ -14,9 +14,8 @@ module Kscript
   class KkUsdUtils < Base
     API_URL = 'https://api.exchangerate-api.com/v4/latest/USD'
 
-    def initialize(currency_code = nil, *_args, **opts)
-      super(**opts.merge(service: 'kk_usd'))
-      @currency_code = currency_code
+    def initialize(*args, **opts)
+      super(*args, **opts)
     end
 
     def run

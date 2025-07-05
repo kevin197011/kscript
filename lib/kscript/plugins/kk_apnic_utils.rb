@@ -12,9 +12,9 @@ module Kscript
     attr_reader :country_sn, :cache_file
 
     # Initialize class instance, set country code and cache file path
-    def initialize(country_sn = 'CN', *_args, **opts)
-      super(**opts.merge(service: 'kk_apnic'))
-      @country_sn = country_sn
+    def initialize(country_sn = 'CN', *args, **opts)
+      super(*args, **opts)
+      @country_sn = country_sn || 'CN'
       @cache_file = RUBY_PLATFORM.match?(/(linux|darwin)/) ? '/tmp/apnic.txt' : 'apnic.txt'
     end
 

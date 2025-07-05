@@ -12,6 +12,10 @@ module Kscript
     WIREGUARD_PORT = 51_821
     ALLOWED_IPS = %w[127.0.0.1].freeze
 
+    def initialize(*args, **opts)
+      super(*args, **opts)
+    end
+
     def run
       with_error_handling do
         apply_rules

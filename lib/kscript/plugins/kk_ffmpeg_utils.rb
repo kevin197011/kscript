@@ -9,8 +9,8 @@ require 'kscript'
 
 module Kscript
   class KkFfmpegUtils < Base
-    def initialize(*_args, **opts)
-      super(**opts.merge(service: 'kk_ffmpeg'))
+    def initialize(*args, **opts)
+      super(*args, **opts)
     end
 
     def run

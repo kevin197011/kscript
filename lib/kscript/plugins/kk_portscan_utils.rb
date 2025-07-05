@@ -15,11 +15,11 @@ module Kscript
     # @param host [String] target host to scan
     # @param ports [Array<Integer>] list of ports to scan
     # @param thread_count [Integer] number of concurrent threads
-    def initialize(target = nil, ports = (1..1024), thread_count = 50, *_args, **opts)
-      super(**opts.merge(service: 'kk_port_scanner'))
-      @target = target
-      @ports = parse_ports(ports)
-      @thread_count = (opts[:thread_count] || thread_count || 50).to_i
+    def initialize(*args, **opts)
+      super(*args, **opts)
+      @target = args[0]
+      @ports = parse_ports(args[1] || (1..1024))
+      @thread_count = (opts[:thread_count] || 50).to_i
     end
 
     def run

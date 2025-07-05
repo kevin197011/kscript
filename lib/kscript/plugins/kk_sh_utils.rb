@@ -15,9 +15,9 @@ module Kscript
 
     # Initialize with shell command to look up
     # @param command [String] command to get help for
-    def initialize(command = nil, *_args, **opts)
-      super(**opts.merge(service: 'kk_sh'))
-      @command = command
+    def initialize(*args, **opts)
+      super(*args, **opts)
+      @command = args.first
     end
 
     def run

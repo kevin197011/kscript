@@ -9,14 +9,8 @@ require 'kscript'
 
 module Kscript
   class KkJenkinsUtils < Base
-    def run
-      with_error_handling do
-        logger.kinfo('Jenkins job manager executed.')
-      end
-    end
-
     def initialize(*args, **opts)
-      super(**opts.merge(service: 'kk_jenkins'))
+      super(*args, **opts)
       jenkins_url, user, password = args
       @jenkins_url = jenkins_url
       @user = user
@@ -24,6 +18,12 @@ module Kscript
       @auth_header = "Basic #{Base64.strict_encode64("#{@user}:#{@password}")}"
       @output = $stdout
       @output.sync = true
+    end
+
+    def run
+      with_error_handling do
+        logger.kinfo('Jenkins job manager executed.')
+      end
     end
 
     def export_all_jobs

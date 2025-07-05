@@ -14,9 +14,9 @@ module Kscript
 
     attr_reader :ip_address
 
-    def initialize(ip_address = nil, *_args, **opts)
-      super(**opts.merge(service: 'kk_ip_api'))
-      @ip_address = ip_address || fetch_public_ip
+    def initialize(*args, **opts)
+      super(*args, **opts)
+      @ip_address = args.first || fetch_public_ip
     end
 
     def run

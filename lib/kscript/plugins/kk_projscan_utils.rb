@@ -9,9 +9,8 @@ require 'kscript'
 
 module Kscript
   class KkProjscanUtils < Base
-    def initialize(src_path = nil, *_args, **opts)
-      super(**opts.merge(service: 'kk_project_scanner'))
-      @src_path = src_path || File.expand_path('~/projects/src')
+    def initialize(*args, **opts)
+      super(*args, **opts)
     end
 
     def run

@@ -16,10 +16,10 @@ module Kscript
     # Initialize the cleaner with path and retention settings
     # @param source_path [String] path to source code directory
     # @param retain_count [Integer] number of versions to keep
-    def initialize(source_path = '/data/sources/*/**', retain_count = DEFAULT_RETAIN_VERSIONS, *_args, **opts)
-      super(**opts.merge(service: 'kk_source_cleaner'))
-      @source_path = source_path
-      @retain_count = retain_count
+    def initialize(*args, **opts)
+      super(*args, **opts)
+      @source_path = args[0] || '/data/sources/*/**'
+      @retain_count = args[1] || DEFAULT_RETAIN_VERSIONS
     end
 
     def run

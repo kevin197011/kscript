@@ -11,11 +11,11 @@ module Kscript
   class KkRenameUtils < Base
     attr_reader :source_pattern, :target_pattern, :directory
 
-    def initialize(source_pattern = nil, target_pattern = nil, directory = Dir.pwd, *_args, **opts)
-      super(**opts.merge(service: 'kk_rename'))
-      @source_pattern = source_pattern
-      @target_pattern = target_pattern
-      @directory = directory
+    def initialize(*args, **opts)
+      super(*args, **opts)
+      @source_pattern = args[0]
+      @target_pattern = args[1]
+      @directory = args[2] || Dir.pwd
     end
 
     def run

@@ -20,9 +20,9 @@ module Kscript
 
     # Initialize the LVM mounter with configuration
     # @param config [Hash] configuration options
-    def initialize(config = {}, *_args, **opts)
-      super(**opts.merge(service: 'kk_lvm'))
-      @config = DEFAULT_CONFIG.merge(config)
+    def initialize(*args, **opts)
+      super(*args, **opts)
+      @config = DEFAULT_CONFIG.merge(opts)
     end
 
     def run

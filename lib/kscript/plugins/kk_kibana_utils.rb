@@ -9,14 +9,8 @@ require 'kscript'
 
 module Kscript
   class KkKibanaUtils < Base
-    def run
-      with_error_handling do
-        logger.kinfo('Kibana utils executed.')
-      end
-    end
-
     def initialize(*args, **opts)
-      super(**opts.merge(service: 'kk_kibana'))
+      super(*args, **opts)
       project_name, project_env, base_url, username, password = args
       @base_url = base_url
       @username = username
@@ -27,6 +21,12 @@ module Kscript
 
       # Check and create space if it doesn't exist
       create_space unless space_exists?
+    end
+
+    def run
+      with_error_handling do
+        logger.kinfo('Kibana utils executed.')
+      end
     end
 
     # Check if the space exists

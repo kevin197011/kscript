@@ -9,6 +9,10 @@ require 'kscript'
 
 module Kscript
   class KkTopUtils < Base
+    def initialize(*args, **opts)
+      super(*args, **opts)
+    end
+
     def run
       with_error_handling do
         print_report
