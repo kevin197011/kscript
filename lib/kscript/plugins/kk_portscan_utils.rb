@@ -15,10 +15,11 @@ module Kscript
     # @param host [String] target host to scan
     # @param ports [Array<Integer>] list of ports to scan
     # @param thread_count [Integer] number of concurrent threads
-    def initialize(target = nil, ports = (1..1024), *_args, **opts)
+    def initialize(target = nil, ports = (1..1024), thread_count = 50, *_args, **opts)
       super(**opts.merge(service: 'kk_port_scanner'))
       @target = target
-      @ports = ports.is_a?(Range) ? ports : (1..1024)
+      @ports = parse_ports(ports)
+      @thread_count = (opts[:thread_count] || thread_count || 50).to_i
     end
 
     def run
@@ -29,23 +30,62 @@ module Kscript
 
     # Execute port scanning using multiple threads
     def scan
-      msg = "Scanning #{@target} ports #{@ports}"
+      msg = "Scanning #{@target} ports #{@ports} with concurrency=#{@thread_count}"
       if human_output?
         puts msg
       else
         logger.kinfo(msg)
       end
-      @ports.each do |port|
-        Socket.tcp(@target, port, connect_timeout: 0.5) do |_sock|
-          if human_output?
-            puts "Port #{port} is open"
-          else
-            logger.kinfo('Port open', port: port)
-            logger.kinfo("Port #{port} is open")
+      queue = Queue.new
+      @ports.each { |port| queue << port }
+      threads = []
+      @thread_count.times do
+        threads << Thread.new do
+          until queue.empty?
+            port = nil
+            begin
+              port = queue.pop(true)
+            rescue ThreadError
+              break
+            end
+            begin
+              Socket.tcp(@target, port, connect_timeout: 0.5) do |_sock|
+                if human_output?
+                  puts "Port #{port} is open"
+                else
+                  logger.kinfo('Port open', port: port)
+                  logger.kinfo("Port #{port} is open")
+                end
+              end
+            rescue Errno::ECONNREFUSED, Errno::ETIMEDOUT, SocketError
+              # closed or filtered
+            end
           end
         end
-      rescue Errno::ECONNREFUSED, Errno::ETIMEDOUT, SocketError
-        # closed or filtered
+      end
+      threads.each(&:join)
+    end
+
+    # 支持多种端口参数格式: 22,80,443 或 1..1024
+    def parse_ports(ports)
+      return ports.to_a if ports.is_a?(Range)
+
+      if ports.is_a?(String)
+        if ports.include?(',')
+          ports.split(',').map(&:to_i)
+        elsif ports.include?('..')
+          begin
+            eval(ports).to_a
+          rescue StandardError
+            (1..1024).to_a
+          end
+        else
+          [ports.to_i]
+        end
+      elsif ports.is_a?(Array)
+        ports.map(&:to_i)
+      else
+        (1..1024).to_a
       end
     end
 
@@ -54,11 +94,11 @@ module Kscript
     end
 
     def self.arguments
-      '<target_host>'
+      '<target_host> [ports] [thread_count]'
     end
 
     def self.usage
-      "kscript portscan 192.168.1.1\nkscript portscan example.com --ports=22,80,443"
+      "kscript portscan 192.168.1.1\nkscript portscan example.com 22,80,443 100\nkscript portscan 192.168.1.1 1..1024 200"
     end
 
     def self.group
