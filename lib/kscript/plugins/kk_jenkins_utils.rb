@@ -15,7 +15,9 @@ module Kscript
       end
     end
 
-    def initialize(jenkins_url, user, password)
+    def initialize(*args, **opts)
+      super(**opts.merge(service: 'kk_jenkins'))
+      jenkins_url, user, password = args
       @jenkins_url = jenkins_url
       @user = user
       @password = password

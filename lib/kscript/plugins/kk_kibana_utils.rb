@@ -15,7 +15,9 @@ module Kscript
       end
     end
 
-    def initialize(project_name, project_env, base_url, username, password)
+    def initialize(*args, **opts)
+      super(**opts.merge(service: 'kk_kibana'))
+      project_name, project_env, base_url, username, password = args
       @base_url = base_url
       @username = username
       @password = password

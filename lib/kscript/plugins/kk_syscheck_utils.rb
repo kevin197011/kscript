@@ -9,6 +9,10 @@ require 'kscript'
 
 module Kscript
   class KkSyscheckUtils < Base
+    def initialize(*_args, **opts)
+      super(**opts.merge(service: 'kk_syscheck'))
+    end
+
     def run
       with_error_handling do
         check

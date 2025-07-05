@@ -9,6 +9,10 @@ require 'kscript'
 
 module Kscript
   class KkFfmpegUtils < Base
+    def initialize(*_args, **opts)
+      super(**opts.merge(service: 'kk_ffmpeg'))
+    end
+
     def run
       with_error_handling do
         install

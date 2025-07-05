@@ -15,8 +15,9 @@ module Kscript
 
     # Initialize with certificate path
     # @param cert_path [String] path to the certificate file
-    def initialize(cert_path = DEFAULT_CERT_PATH)
-      @cert_path = cert_path
+    def initialize(cert_path = nil, *_args, **opts)
+      super(**opts.merge(service: 'kk_es_fingerprint'))
+      @cert_path = cert_path || self.class::DEFAULT_CERT_PATH
     end
 
     def run
