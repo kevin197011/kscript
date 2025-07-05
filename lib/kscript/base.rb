@@ -7,11 +7,9 @@ module Kscript
   class Base
     attr_reader :logger
 
-    def initialize(service: nil, log_level: nil, trace_id: nil)
+    def initialize(service: nil, log_level: nil)
       config = defined?(Kscript::Utils::Config) ? Kscript::Utils::Config.load : nil
       log_level ||= config&.log_level || ENV['KSCRIPT_LOG_LEVEL'] || :info
-      trace_id ||= config&.trace_id || ENV['KSCRIPT_TRACE_ID']
-      @trace_id = trace_id
       @logger = Kscript::Logger.new(service: service || self.class.name, level: log_level)
       @logger.set_human_output(human_output?)
     end
@@ -22,12 +20,6 @@ module Kscript
     rescue StandardError => e
       logger.error("Unhandled error: #{e.class} - #{e.message}", error: e.class.name, backtrace: e.backtrace&.first(5))
       exit(1)
-    end
-
-    # 提供 trace_id 给 logger
-    def logger
-      @logger.define_singleton_method(:default_trace_id) { @trace_id } if @trace_id
-      @logger
     end
 
     # 自动注册所有 Kscript::Base 的子类为插件

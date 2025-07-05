@@ -24,10 +24,6 @@ module Kscript
         self['log_level']
       end
 
-      def trace_id
-        self['trace_id']
-      end
-
       # 自动检测并安装 shell 补全脚本
       def self.ensure_completion_installed(shell = nil)
         shell ||= ENV['SHELL']

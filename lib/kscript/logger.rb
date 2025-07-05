@@ -45,14 +45,12 @@ module Kscript
     end
 
     def log(level, message, context = {})
-      trace_id = context[:trace_id] || (respond_to?(:default_trace_id) ? default_trace_id : nil) || SecureRandom.hex(8)
       entry = {
         timestamp: Time.now.utc.iso8601,
         level: level.to_s.upcase,
         service: @service,
         message: message,
-        trace_id: trace_id,
-        context: context.reject { |k, _| k == :trace_id }
+        context: context
       }
       @logger.send(level, entry.to_json)
     end
@@ -67,7 +65,7 @@ module Kscript
         svc = @service || 'kscript'
         trace = context[:trace_id] || (respond_to?(:default_trace_id) ? default_trace_id : nil) || '-'
         color = COLORS[level] || COLORS[:info]
-        ctx_str = context.reject { |k, _| k == :trace_id }.map { |k, v| "#{k}=#{v}" }.join(' ')
+        ctx_str = context.map { |k, v| "#{k}=#{v}" }.join(' ')
         line = "[#{ts}] [#{lvl}] [#{svc}] [#{trace}] #{message}"
         line += " | #{ctx_str}" unless ctx_str.empty?
         $stdout.puts "#{color}#{line}#{COLORS[:reset]}"
