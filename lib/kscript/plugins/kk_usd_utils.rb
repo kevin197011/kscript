@@ -14,8 +14,9 @@ module Kscript
   class KkUsdUtils < Base
     API_URL = 'https://api.exchangerate-api.com/v4/latest/USD'
 
-    def initialize(*args, **opts)
+    def initialize(currency_code = 'CNY', *args, **opts)
       super(*args, **opts)
+      @currency_code = currency_code
     end
 
     def run
@@ -30,18 +31,9 @@ module Kscript
       data = JSON.parse(response)
       if @currency_code && data['rates'][@currency_code.upcase]
         rate = data['rates'][@currency_code.upcase]
-        if human_output?
-          logger.kinfo("1 USD = #{rate} #{@currency_code.upcase}")
-        else
-          logger.kinfo("USD -> #{@currency_code.upcase}", rate: rate)
-        end
+        logger.kinfo("1 USD = #{rate} #{@currency_code.upcase}")
       elsif @currency_code
-        if human_output?
-        end
         logger.kerror("Currency code not found: #{@currency_code}")
-      elsif human_output?
-        logger.kinfo('USD Exchange Rates:')
-        data['rates'].each { |k, v| logger.kinfo("  1 USD = #{v} #{k}") }
       else
         logger.kinfo('USD rates', rates: data['rates'])
       end
