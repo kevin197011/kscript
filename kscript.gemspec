@@ -23,9 +23,16 @@ Gem::Specification.new do |spec|
   }
 
   # Files
-  spec.files = Dir.glob(%w[lib/**/* bin/* ext/**/* *.md *.txt]).reject { |f| File.directory?(f) }
-  spec.bindir        = 'bin'
-  spec.executables   = spec.files.grep(%r{\Abin/}) { |f| File.basename(f) }
+  spec.files = Dir.glob(%w[
+                          lib/**/*
+                          exe/*
+                          ext/**/*
+                          *.md
+                          *.txt
+                        ]).reject { |f| File.directory?(f) }
+
+  spec.bindir        = 'exe'
+  spec.executables   = spec.files.grep(%r{\Aexe/}) { |f| File.basename(f) }
   spec.require_paths = ['lib']
   spec.extensions    = ['ext/mkrf_conf.rb']
 
