@@ -24,6 +24,8 @@ require 'http'
 require 'bcrypt'
 require 'nokogiri'
 require 'thor'
+require 'aws-sdk-s3'
+require 'dotenv'
 
 require 'kscript/config'
 require 'kscript/plugins'
