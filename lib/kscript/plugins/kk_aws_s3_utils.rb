@@ -9,7 +9,7 @@ require 'kscript'
 
 # AWS S3 文件上传测试工具
 # 用法示例：
-#   kscript aws_s3_upload --file local.txt --bucket my-bucket --key test.txt --region ap-northeast-1 --access_key xxx --secret_key yyy
+#   kscript aws_s3 --file local.txt --bucket my-bucket --key test.txt --region ap-northeast-1 --access_key xxx --secret_key yyy
 #
 # 依赖：aws-sdk-s3（已在主入口 require）
 
@@ -18,10 +18,11 @@ module Kscript
     # 初始化，支持所有参数通过 CLI 传递
     def initialize(*args, **opts)
       super(*args, **opts)
-      @file       = opts[:file]       || args[0]
-      @key        = opts[:key]        || args[1]
-      @bucket     = opts[:bucket]     || ENV['AWS_BUCKET']
-      @region     = opts[:region]     || ENV['AWS_REGION']
+      # 兼容 --file test.txt 以及 --file=test.txt
+      @file = opts[:file] || args[0]
+      @bucket = opts[:bucket] || args[1] || ENV['AWS_BUCKET']
+      @key = opts[:key] || args[2]
+      @region = opts[:region] || ENV['AWS_REGION']
       @access_key = opts[:access_key] || ENV['AWS_ACCESS_KEY_ID']
       @secret_key = opts[:secret_key] || ENV['AWS_SECRET_ACCESS_KEY']
     end

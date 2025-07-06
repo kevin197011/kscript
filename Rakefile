@@ -29,4 +29,5 @@ task :dev do
   system 'kscript help'
   system 'kscript list'
   system 'kscript version'
+  system 'kscript env'
 end

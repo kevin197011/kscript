@@ -71,7 +71,7 @@ kscript apnic CN
 kscript portscan 192.168.1.1
 kscript sh 'ls -l'
 kscript projscan ~/projects
-kscript aws_s3_upload --file local.txt --bucket my-bucket --key test.txt --region ap-northeast-1 --access_key xxx --secret_key yyy
+kscript aws_s3 --file local.txt --bucket my-bucket --key test.txt --region ap-northeast-1 --access_key xxx --secret_key yyy
 ```
 
 ### 结构化日志模式
@@ -109,7 +109,7 @@ kscript portscan 192.168.1.1 --log-level=debug
 - **ci**
   - `jenkins`：Jenkins Job 导入导出
 - **cloud**
-  - `aws_s3_upload`：AWS S3 文件上传测试
+  - `aws_s3`：AWS S3 文件上传测试
 - **其它**
   - `usd`：美元汇率工具
   - `lvm`：LVM 卷管理

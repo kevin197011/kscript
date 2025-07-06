@@ -7,11 +7,12 @@ module Kscript
   class Base
     attr_reader :logger
 
-    def initialize(service: nil, log_level: nil)
-      config = defined?(Kscript::Utils::Config) ? Kscript::Utils::Config.load : nil
-      log_level ||= config&.log_level || ENV['KSCRIPT_LOG_LEVEL'] || :info
-      @logger = Kscript::Logger.new(service: service || self.class.name, level: log_level)
+    def initialize(**opts)
+      service = opts.delete(:service) || self.class.name
+      log_level = opts.delete(:log_level) || ENV['KSCRIPT_LOG_LEVEL'] || :info
+      @logger = Kscript::Logger.new(service: service, level: log_level)
       @logger.set_human_output(human_output?)
+      # 其余 opts 可由子类使用
     end
 
     # 通用工具方法可在此扩展

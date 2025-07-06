@@ -5,6 +5,8 @@ require 'kscript/banner'
 
 module Kscript
   class CLI < Thor
+    Kscript::Config.load!
+
     class_option :log_level, type: :string, desc: 'Set log level (debug, info, warn, error, fatal)',
                              aliases: '--log-level'
     class_option :log, type: :boolean, desc: 'Enable structured log output', default: false
@@ -76,12 +78,28 @@ module Kscript
         puts Kscript::BANNER
         puts color('─' * 80, 90)
         begin
-          instance = klass.new(*args)
-          instance.run
+          instance = klass.new(**options)
+          instance.run(*args)
         rescue ArgumentError => e
           warn "Argument error: #{e.message}"
           puts "Usage: kscript #{command} #{klass.respond_to?(:arguments) ? klass.arguments : '[args...]'}"
           exit 1
+        end
+      end
+    end
+
+    desc 'env', 'Show current environment variables relevant to kscript'
+    def env
+      puts Kscript::BANNER
+      puts color('─' * 80, 90)
+      keys = ENV.keys.grep(/^(KSCRIPT_|AWS_|LOG$|SHELL$|HOME$)/)
+      if keys.empty?
+        puts gray('No relevant environment variables found.')
+      else
+        puts bold('Loaded environment variables:')
+        keys.sort.each do |k|
+          v = ENV[k]
+          puts green(k.ljust(28)) + gray('=') + cyan(v)
         end
       end
     end
