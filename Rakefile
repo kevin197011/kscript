@@ -12,31 +12,21 @@ require 'bundler/gem_tasks'
 task default: %w[push]
 
 task :push do
-  system <<-SHELL
-    rubocop -A
-    git update-index --chmod=+x push
-    git add .
-    git commit -m "Update #{Time.now}"
-    git pull
-    git push origin main
-  SHELL
+  system 'rm -rf kscript-*.gem'
+  system 'rm -rf pkg/kscript-*.gem'
+  system 'rubocop -A'
+  system 'git update-index --chmod=+x push'
+  system 'git add .'
+  system "git commit -m \"Update #{Time.now}\""
+  system 'git pull'
+  system 'git push origin main'
 end
 
-# 其他自定义任务可在此添加
 task :dev do
-  sh <<-SHELL
-    gem uninstall kscript -aIx
-    gem build kscript.gemspec
-    gem install kscript-#{Kscript::VERSION}.gem
-    kscript help
-    kscript list
-    kscript version
-  SHELL
-end
-
-task :install do
-  sh <<-SHELL
-    gem uninstall kscript -aIx
-    gem install kscript
-  SHELL
+  system 'gem uninstall kscript -aIx'
+  system 'gem build kscript.gemspec'
+  system "gem install kscript-#{Kscript::VERSION}.gem"
+  system 'kscript help'
+  system 'kscript list'
+  system 'kscript version'
 end

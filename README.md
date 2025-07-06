@@ -25,6 +25,7 @@ _  ,<  _(__  )/ /__ _  /   _  / __  /_/ / /_
 - **参数健壮**：所有插件兼容多余参数，支持全局参数过滤
 - **CI/CD 自动发布**：GitHub Actions 自动构建并推送 RubyGem
 - **多平台支持**：macOS、Linux、Windows（部分工具）
+- **自动生成配置**：首次安装自动生成 `~/.kscript/.env` 配置示例
 
 ---
 
@@ -70,6 +71,7 @@ kscript apnic CN
 kscript portscan 192.168.1.1
 kscript sh 'ls -l'
 kscript projscan ~/projects
+kscript aws_s3_upload --file local.txt --bucket my-bucket --key test.txt --region ap-northeast-1 --access_key xxx --secret_key yyy
 ```
 
 ### 结构化日志模式
@@ -106,6 +108,8 @@ kscript portscan 192.168.1.1 --log-level=debug
   - `kibana`：Kibana 空间/索引/用户/角色自动化
 - **ci**
   - `jenkins`：Jenkins Job 导入导出
+- **cloud**
+  - `aws_s3_upload`：AWS S3 文件上传测试
 - **其它**
   - `usd`：美元汇率工具
   - `lvm`：LVM 卷管理
@@ -113,13 +117,15 @@ kscript portscan 192.168.1.1 --log-level=debug
 
 ---
 
-## ⚡ Shell 自动补全
+## ⚡ Shell 自动补全 & 配置示例
 
-- **首次运行自动为 zsh/bash 部署补全脚本**，无需手动操作
+- **首次安装/升级自动为 zsh/bash 部署补全脚本，并生成 `~/.kscript/.env` 配置示例**
 - 补全脚本路径：
   - zsh: `~/.zsh/completions/_kscript`
   - bash: `~/.bash_completion.d/kscript`
-- 手动生成：
+- 配置文件路径：
+  - `~/.kscript/.env`（自动生成，支持 ENV 变量注释说明）
+- 手动生成补全：
   ```bash
   kscript completion zsh > ~/.zsh/completions/_kscript
   kscript completion bash > ~/.bash_completion.d/kscript
@@ -127,12 +133,20 @@ kscript portscan 192.168.1.1 --log-level=debug
 
 ---
 
-## ⚙️ 全局配置
+## ⚙️ 全局配置（.env 格式）
 
-在 `~/.kscriptrc` (YAML) 配置全局参数：
+所有全局参数均通过 `~/.kscript/.env` 文件（自动生成，标准 .env 格式）或环境变量注入。例如：
 
-```yaml
-log_level: debug
+```env
+# AWS S3 upload config
+AWS_BUCKET=my-bucket
+AWS_REGION=ap-northeast-1
+AWS_ACCESS_KEY_ID=xxx
+AWS_SECRET_ACCESS_KEY=yyy
+
+# Logging config
+KSCRIPT_LOG_LEVEL=info
+LOG=1
 ```
 
 ---
@@ -143,6 +157,7 @@ log_level: debug
 - 支持 `self.description`、`self.usage`、`self.arguments`、`self.group`、`self.author`
 - 输出统一用 `logger.kinfo`/`logger.kerror`，支持结构化日志
 - 兼容多余参数，避免 ArgumentError
+- 依赖统一在主入口 require，插件只需 require 'kscript'
 
 ---
 
@@ -151,6 +166,14 @@ log_level: debug
 - `.github/workflows/gem-push.yml`：main 分支和 PR 自动构建、tag push 自动发布到 RubyGems
 - 需在 GitHub secrets 配置 `RUBYGEMS_API_KEY`
 - [CI 状态与历史](https://github.com/kevin197011/kscript/actions/workflows/gem-push.yml)
+
+---
+
+## 📦 依赖与兼容性
+
+- Ruby >= 3.0
+- 依赖：bcrypt, http, nokogiri, thor, aws-sdk-s3 等
+- 支持 macOS、Linux，部分工具支持 Windows
 
 ---
 

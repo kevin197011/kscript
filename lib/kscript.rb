@@ -25,6 +25,7 @@ require 'bcrypt'
 require 'nokogiri'
 require 'thor'
 
+require 'kscript/config'
 require 'kscript/plugins'
 require 'kscript/base'
 require 'kscript/logger'
