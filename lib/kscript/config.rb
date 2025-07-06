@@ -6,8 +6,6 @@
 #   Kscript::Config.load!
 #   Kscript::Config.get('AWS_ACCESS_KEY_ID')
 
-require 'dotenv'
-
 module Kscript
   module Config
     CONFIG_PATH = File.expand_path('~/.kscript/.env')
