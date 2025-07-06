@@ -86,40 +86,6 @@ module Kscript
       end
     end
 
-    desc 'completion SHELL', 'Generate shell completion script (zsh or bash)'
-    def completion(shell = 'zsh', capture: false)
-      commands = %w[version help
-                    list] + Kscript::PluginLoader.plugin_infos.map do |info|
-                              cmd = info[:name].to_s.sub(/^kk_/, '')
-                              cmd = 'sh' if cmd == 'shell'
-                              cmd
-                            end
-      output = StringIO.new
-      case shell
-      when 'zsh'
-        output.puts "#compdef kscript\n"
-        output.puts '_kscript() {'
-        output.puts '  local -a commands'
-        output.puts '  commands=('
-        commands.each do |cmd|
-          output.puts "    '#{cmd}:kscript command'"
-        end
-        output.puts '  )'
-        output.puts "  _describe 'command' commands"
-        output.puts '}'
-        output.puts 'compdef _kscript kscript'
-      when 'bash'
-        output.puts '_kscript_completions() {'
-        output.puts "  COMPREPLY=($(compgen -W \"#{commands.join(' ')}\" -- \"${COMP_WORDS[1]}\"))"
-        output.puts '}'
-        output.puts 'complete -F _kscript_completions kscript'
-      else
-        output.puts "Unsupported shell: #{shell}. Only 'zsh' and 'bash' are supported."
-        return capture ? output.string : (puts output.string)
-      end
-      capture ? output.string : (puts output.string)
-    end
-
     no_commands do
       def color(str, code)
         "\e[#{code}m#{str}\e[0m"
@@ -171,12 +137,4 @@ module Kscript
       nil
     end
   end
-end
-
-# CLI 启动时自动检测并安装 shell 补全脚本
-begin
-  require_relative 'utils'
-  Kscript::Utils::Config.ensure_completion_installed
-rescue StandardError => e
-  warn "[kscript] Shell completion auto-install failed: #{e.message}"
 end

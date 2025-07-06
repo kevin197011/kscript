@@ -44,7 +44,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'thor', '1.3.2'
 
   # Development dependencies
-  spec.add_development_dependency 'rubocop', '~> 1.0'
+  spec.add_development_dependency 'rubocop', '~> 1.21'
 
   # Post install message
   spec.post_install_message = <<~MESSAGE
