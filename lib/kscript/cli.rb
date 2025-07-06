@@ -74,6 +74,21 @@ module Kscript
       klass = info[:class]
       desc command,
            (info[:description] || 'No description') + (reserved.include?(orig_command) ? " (original: #{orig_command})" : '')
+
+      # 动态注册 option
+      if klass.respond_to?(:arguments) && klass.arguments.is_a?(String)
+        # 支持 '--file FILE --bucket BUCKET ...' 或 '<file> <bucket>'
+        arg_str = klass.arguments
+        arg_names = arg_str.scan(/--([a-zA-Z0-9_-]+)/).flatten
+        # 兼容 <file> <bucket> 形式
+        arg_names += arg_str.scan(/<([a-zA-Z0-9_-]+)>/).flatten
+        arg_names.uniq.each do |param|
+          next if %w[help version].include?(param)
+
+          option param.to_sym, type: :string, desc: param
+        end
+      end
+
       define_method(command) do |*args|
         puts Kscript::BANNER
         puts color('─' * 80, 90)
