@@ -40,7 +40,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'aws-sdk-s3', '~> 1.130'
   spec.add_dependency 'bcrypt', '>= 3.1', '< 4.0'
   spec.add_dependency 'dotenv', '~> 3.0'
-  spec.add_dependency 'http', '>= 4.0', '< 6.0'
+  spec.add_dependency 'httpx', '~> 1.5'
   spec.add_dependency 'nokogiri', '>= 1.13', '< 2.0'
   spec.add_dependency 'rake', '~> 13.0'
   spec.add_dependency 'thor', '1.3.2'

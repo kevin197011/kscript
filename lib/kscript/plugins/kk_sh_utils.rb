@@ -6,6 +6,7 @@
 # https://opensource.org/licenses/MIT
 
 require 'kscript'
+require 'httpx'
 
 module Kscript
   class KkShUtils < Base
@@ -17,12 +18,17 @@ module Kscript
     # @param command [String] command to get help for
     def initialize(*args, **opts)
       super(*args, **opts)
-      @command = args.first
+      @command = args.join(' ').strip
     end
 
-    def run
+    def run(*args, **_opts)
+      command = args.join(' ').strip
       with_error_handling do
-        help
+        if command.nil? || command.strip.empty?
+          logger.kwarn("Usage: #{self.class.usage}")
+        else
+          fetch_help(command)
+        end
       end
     end
 
@@ -36,10 +42,11 @@ module Kscript
     end
 
     # Fetch and display command documentation
-    def fetch_help
-      response = make_request
-      display_result(response)
-    rescue HTTP::Error => e
+    def fetch_help(command)
+      response = make_request(command)
+      response = response.is_a?(Array) ? response.first : response
+      puts response.body
+    rescue StandardError => e
       display_error(e)
     end
 
@@ -65,41 +72,15 @@ module Kscript
 
     private
 
-    # Make HTTP request to cht.sh
-    # @return [HTTP::Response] response from cht.sh
-    def make_request
-      HTTP.get("#{CHT_SH_URL}/#{command}")
-    end
-
-    # Display command documentation
-    # @param response [HTTP::Response] response from cht.sh
-    def display_result(response)
-      if response.status.success?
-        text = extract_plain_text(response.body)
-        logger.kinfo(text)
-      else
-        logger.kerror("Failed to retrieve data: #{response.status}")
-      end
-    end
-
-    # 提取纯文本内容
-    def extract_plain_text(body)
-      body = body.to_s
-      begin
-        doc = Nokogiri::HTML(body)
-        doc.search('script,style').remove
-        text = doc.text.lines.map(&:strip)
-        # 过滤掉包含广告/社交/Follow等内容的行
-        text = text.reject { |line| line =~ /Follow @|twitter|github|sponsor|donate|chubin|^!function/ }
-        text.reject!(&:empty?)
-        # 去除顶部多余空白行，只保留正文
-        text = text.drop_while(&:empty?)
-        text.join("\n")
-      rescue StandardError
-        body.gsub(/\e\[[\d;]*m/, '').lines.reject do |line|
-          line =~ /Follow @|twitter|github|sponsor|donate|chubin|^!function/
-        end.drop_while { |line| line.strip.empty? }.join
-      end
+    # Make HTTP request to cheat.sh
+    # @return [HTTPX::Response] response from cheat.sh
+    def make_request(command)
+      HTTPX.with(
+        headers: {
+          'User-Agent' => 'curl/8.0.1',
+          'Accept' => 'text/plain'
+        }
+      ).get("https://cheat.sh/#{URI.encode_www_form_component(command)}")
     end
 
     # Display error message

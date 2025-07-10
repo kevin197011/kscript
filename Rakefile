@@ -9,11 +9,11 @@ require 'time'
 require 'rake'
 require 'bundler/gem_tasks'
 
-task default: %w[push]
+task default: %w[run]
 
 task :push do
   system 'rm -rf kscript-*.gem'
-  system 'rm -rf pkg/kscript-*.gem'
+  system 'rm -rf pkg'
   system 'rubocop -A'
   system 'git update-index --chmod=+x push'
   system 'git add .'
@@ -22,12 +22,12 @@ task :push do
   system 'git push origin main'
 end
 
-task :dev do
+task :run do
   system 'gem uninstall kscript -aIx'
   system 'gem build kscript.gemspec'
   system "gem install kscript-#{Kscript::VERSION}.gem"
-  system 'kscript help'
+  # system 'kscript help'
   system 'kscript list'
-  system 'kscript version'
-  system 'kscript env'
+  # system 'kscript version'
+  # system 'kscript env'
 end
