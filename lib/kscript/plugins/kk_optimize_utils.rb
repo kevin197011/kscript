@@ -15,27 +15,15 @@ module Kscript
 
     def run(*args, **_opts)
       with_error_handling do
-        case args[0]&.to_s
-        when 'clean'
-          optimize_clean
-        when 'speedup'
-          optimize_speedup
-        when nil, '', 'help', '--help', '-h'
+        if %w[help --help -h].include?(args[0]&.to_s)
           logger.kwarn("Usage: #{self.class.usage}")
         else
-          logger.kerror("Unknown subcommand: #{args[0]}")
-          logger.kwarn("Usage: #{self.class.usage}")
+          optimize_all
         end
       end
     end
 
-    def optimize_clean
-      logger.kinfo('🧹 Purging memory cache...')
-      system('sudo purge')
-      logger.kinfo('✅ Memory cache purged')
-    end
-
-    def optimize_speedup
+    def optimize_all
       logger.kinfo('🔧 Starting macOS system optimization...')
 
       # Lower priority for OrbStack Helper
@@ -54,6 +42,11 @@ module Kscript
           system("osascript -e 'tell application \"#{app}\" to quit'")
         end
       end
+
+      # Purge memory cache
+      logger.kinfo('🧹 Purging memory cache...')
+      system('sudo purge')
+      logger.kinfo('✅ Memory cache purged')
 
       # Enable Low Power Mode (macOS 12+)
       macos_version = `sw_vers -productVersion`.strip
@@ -77,11 +70,11 @@ module Kscript
     end
 
     def self.arguments
-      '[subcommand] [options]'
+      ''
     end
 
     def self.usage
-      "kscript optimize clean\nkscript optimize speedup"
+      'kscript optimize'
     end
 
     def self.group
