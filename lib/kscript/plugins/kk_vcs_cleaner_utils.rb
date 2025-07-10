@@ -64,7 +64,7 @@ module Kscript
       version_count = versions.length
       return if version_count <= @retain_count
 
-      logger.info("Processing #{app_path}", version_count: version_count, retain: @retain_count)
+      logger.kinfo("Processing #{app_path}", version_count: version_count, retain: @retain_count)
       cleanup_old_versions(versions, version_count)
     end
 

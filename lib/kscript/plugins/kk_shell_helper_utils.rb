@@ -44,7 +44,7 @@ module Kscript
     def fetch_help(command)
       response = make_request(command)
       response = response.first if response.is_a?(Array)
-      puts response.body
+      logger.kinfo(response.body)
     rescue StandardError => e
       display_error(e)
     end

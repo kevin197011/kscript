@@ -58,7 +58,8 @@ module Kscript
       projects = []
       Dir.glob(File.join(@src_path, '*')).each do |path|
         next unless File.directory?(path)
-        next unless git_project?(path)
+
+        # next unless git_project?(path)
 
         project_name = File.basename(path)
         projects << create_project_entry(project_name, path)

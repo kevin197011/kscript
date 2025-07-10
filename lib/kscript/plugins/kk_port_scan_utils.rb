@@ -22,8 +22,12 @@ module Kscript
       @thread_count = (opts[:thread_count] || 50).to_i
     end
 
-    def run
+    def run(*args, **_opts)
       with_error_handling do
+        # 支持命令行参数覆盖
+        @target = args[0] if args[0]
+        @ports = parse_ports(args[1]) if args[1]
+        @thread_count = args[2].to_i if args[2]
         scan
       end
     end
@@ -31,11 +35,7 @@ module Kscript
     # Execute port scanning using multiple threads
     def scan
       msg = "Scanning #{@target} ports #{@ports} with concurrency=#{@thread_count}"
-      if human_output?
-        puts msg
-      else
-        logger.kinfo(msg)
-      end
+      logger.kinfo(msg)
       queue = Queue.new
       @ports.each { |port| queue << port }
       threads = []
@@ -50,12 +50,7 @@ module Kscript
             end
             begin
               Socket.tcp(@target, port, connect_timeout: 0.5) do |_sock|
-                if human_output?
-                  puts "Port #{port} is open"
-                else
-                  logger.kinfo('Port open', port: port)
-                  logger.kinfo("Port #{port} is open")
-                end
+                logger.kinfo('Port open', port: port)
               end
             rescue Errno::ECONNREFUSED, Errno::ETIMEDOUT, SocketError
               # closed or filtered
