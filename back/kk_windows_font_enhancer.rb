@@ -154,5 +154,3 @@ module Kscript
     end
   end
 end
-
-Kscript::KkWindowsFontEnhancer.new.run if __FILE__ == $PROGRAM_NAME

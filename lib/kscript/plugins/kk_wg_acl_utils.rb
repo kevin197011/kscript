@@ -13,7 +13,7 @@ module Kscript
     ALLOWED_IPS = %w[127.0.0.1].freeze
 
     def initialize(*args, **opts)
-      super(*args, **opts)
+      super
     end
 
     def run

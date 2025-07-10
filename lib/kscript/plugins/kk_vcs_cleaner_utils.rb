@@ -8,7 +8,7 @@
 require 'kscript'
 
 module Kscript
-  class KkCleanerUtils < Base
+  class KkVcsCleanerUtils < Base
     DEFAULT_RETAIN_VERSIONS = 10
 
     attr_reader :source_path, :retain_count
@@ -17,7 +17,7 @@ module Kscript
     # @param source_path [String] path to source code directory
     # @param retain_count [Integer] number of versions to keep
     def initialize(*args, **opts)
-      super(*args, **opts)
+      super
       @source_path = args[0] || '/data/sources/*/**'
       @retain_count = args[1] || DEFAULT_RETAIN_VERSIONS
     end
@@ -40,7 +40,7 @@ module Kscript
     end
 
     def self.usage
-      "kscript source_cleaner ~/projects/src\nkscript source_cleaner . --exclude=vendor"
+      "kscript vcs_cleaner ~/projects/src\nkscript vcs_cleaner . --exclude=vendor"
     end
 
     def self.group

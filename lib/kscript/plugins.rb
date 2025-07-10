@@ -5,7 +5,7 @@ module Kscript
     PLUGIN_DIR = File.expand_path('plugins', __dir__)
 
     def self.load_all
-      Dir.glob(File.join(PLUGIN_DIR, 'kk_*.rb')).sort.each do |file|
+      Dir.glob(File.join(PLUGIN_DIR, 'kk_*.rb')).each do |file|
         # 解析出类名
         basename = File.basename(file, '.rb')
         class_name = basename.split('_').map(&:capitalize).join

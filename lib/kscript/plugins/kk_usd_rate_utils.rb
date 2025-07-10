@@ -11,7 +11,7 @@ require 'net/http'
 require 'json'
 
 module Kscript
-  class KkUsdUtils < Base
+  class KkUsdRateUtils < Base
     API_URL = 'https://api.exchangerate-api.com/v4/latest/USD'
 
     def initialize(currency_code = 'CNY', *args, **opts)
@@ -44,7 +44,7 @@ module Kscript
     end
 
     def self.usage
-      "kscript usd CNY\nkscript usd EUR"
+      "kscript usd_rate CNY\nkscript usd_rate EUR"
     end
 
     def self.group

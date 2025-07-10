@@ -12,20 +12,20 @@ _  ,<  _(__  )/ /__ _  /   _  / __  /_/ / /_
 [![Gem Version](https://img.shields.io/gem/v/kscript?style=flat-square)](https://rubygems.org/gems/kscript)
 [![CI Status](https://github.com/kevin197011/kscript/actions/workflows/gem-push.yml/badge.svg?branch=main)](https://github.com/kevin197011/kscript/actions/workflows/gem-push.yml)
 
-> Ruby CLI 工具集，专为系统运维、开发自动化、网络与项目管理场景设计。支持插件化、极致美化输出、自动补全、结构化日志、CI/CD 自动发布等现代特性。
+> Ruby CLI 工具集，专为系统运维、开发自动化、网络与项目管理场景设计。支持插件化、美化输出、自动补全、结构化日志、CI/CD 自动发布等现代特性。
 
 ---
 
 ## ✨ 特性亮点
-- **统一 CLI 框架**：所有命令一键调用，美化输出
-- **插件化架构**：业务命令即插件，易扩展、易维护
-- **极致美化**：ASCII banner、彩色分组、对齐、分隔线，极客体验
-- **人性化/结构化日志双模式**：`--log`/`--log-level` 切换，支持 JSON/终端友好输出
-- **自动补全**：zsh/bash 补全脚本自动部署，命令一键补全
-- **参数健壮**：所有插件兼容多余参数，支持全局参数过滤
-- **CI/CD 自动发布**：GitHub Actions 自动构建并推送 RubyGem
-- **多平台支持**：macOS、Linux、Windows（部分工具）
-- **自动生成配置**：首次安装自动生成 `~/.kscript/.env` 配置示例
+- 统一 CLI 框架，所有命令一键调用，美化输出
+- 插件化架构，业务命令即插件，易扩展、易维护
+- 美化输出：ASCII banner、彩色分组、分隔线
+- 人性化/结构化日志双模式：`--log`/`--log-level` 切换，支持 JSON/终端友好输出
+- 自动补全：zsh/bash 补全脚本自动部署
+- 参数健壮：所有插件兼容多余参数，支持全局参数过滤
+- CI/CD 自动发布：GitHub Actions 自动构建并推送 RubyGem
+- 多平台支持：macOS、Linux，部分工具支持 Windows
+- 自动生成配置：首次安装自动生成 `~/.kscript/.env` 配置示例
 
 ---
 
@@ -67,17 +67,17 @@ kscript version
 ```bash
 kscript <command> [args...]
 # 例如
-kscript apnic CN
-kscript portscan 192.168.1.1
-kscript sh 'ls -l'
-kscript projscan ~/projects
+kscript apnic_ip CN
+kscript port_scan 192.168.1.1
+kscript shell_helper 'ls -l'
+kscript project_scan ~/projects
 kscript aws_s3 --file local.txt --bucket my-bucket --key test.txt --region ap-northeast-1 --access_key xxx --secret_key yyy
 ```
 
 ### 结构化日志模式
 ```bash
-kscript apnic CN --log
-kscript portscan 192.168.1.1 --log-level=debug
+kscript apnic_ip CN --log
+kscript port_scan 192.168.1.1 --log-level=debug
 ```
 
 ---
@@ -86,40 +86,32 @@ kscript portscan 192.168.1.1 --log-level=debug
 
 > 运行 `kscript list` 可分组美化展示所有插件命令
 
-- **network**
-  - `apnic`：获取国家 IPv4 段
-  - `portscan`：端口扫描
-  - `ip`：IP 工具
-  - `wg_acl`：WireGuard 防火墙 ACL
-  - `wg_pass`：WireGuard 密码工具
-- **project**
-  - `projscan`：扫描目录下所有 git 项目
-  - `cleaner`：源码多版本清理
-  - `rename`：批量重命名文件
-- **system/macos**
-  - `syscheck`：macOS 系统健康检查
-  - `top`：macOS 资源占用排行
-  - `optimize`：macOS 性能优化
-  - `sh`：命令行速查/cheatsheet
-- **media**
-  - `ffmpeg`：FFmpeg 安装与检测
-- **elastic**
-  - `es_fingerprint`：Elasticsearch 证书指纹
-  - `kibana`：Kibana 空间/索引/用户/角色自动化
-- **ci**
-  - `jenkins`：Jenkins Job 导入导出
-- **cloud**
-  - `aws_s3`：AWS S3 文件上传测试
-- **其它**
-  - `usd`：美元汇率工具
-  - `lvm`：LVM 卷管理
-  - `windows_font_enhancer`：Windows 字体增强
+| 分组      | 命令                   | 用法示例                                                         | 参数说明                                               | 描述                                                         |
+|-----------|------------------------|------------------------------------------------------------------|--------------------------------------------------------|--------------------------------------------------------------|
+| network   | `apnic_ip`             | `kscript apnic_ip CN`                                            | `[country_code]`                                       | Get APNIC IPv4 ranges for a country.                         |
+| network   | `port_scan`            | `kscript port_scan 192.168.1.1`                                  | `<target_host> [ports] [thread_count]`                 | Scan open ports on a target host.                            |
+| network   | `ip_lookup`            | `kscript ip_lookup 8.8.8.8`                                      | `<ip_address>`                                         | Query IP geolocation and ISP info.                           |
+| network   | `wg_acl`               | `kscript wg_acl add --ip=10.0.0.2`                               | `[subcommand] [options]`                               | Manage WireGuard firewall ACL rules.                         |
+| network   | `wg_pass`              | `kscript wg_pass 32`                                             | `[length]`                                             | Generate a random password for WireGuard.                    |
+| project   | `project_scan`         | `kscript project_scan ~/projects/src`                            | `[src_path]`                                           | Scan and list all git projects in a directory.               |
+| project   | `vcs_cleaner`          | `kscript vcs_cleaner ~/projects/src`                             | `[src_path]`                                           | Clean old source code versions, keep N latest.               |
+| project   | `file_rename`          | `kscript file_rename foo bar ./src`                              | `<pattern> <replacement> [path]`                       | Batch rename files by pattern.                               |
+| system    | `shell_helper`         | `kscript shell_helper 'ls'`                                      | `[subcommand] [args...]`                               | Query shell command usage and cheatsheets.                   |
+| system    | `lvm_manage`           | `kscript lvm_manage /dev/sda2 /mnt/data`                         | `<device> <mount_point>`                               | Mount and manage Linux LVM volumes.                          |
+| macos     | `mac_status`           | `kscript mac_status`                                             |                                                        | Show macOS system resource monitor report.                   |
+| macos     | `mac_optimize`         | `kscript mac_optimize`                                           |                                                        | Optimize macOS system performance.                           |
+| media     | `ffmpeg_install`       | `kscript ffmpeg_install 6.0`                                     | `[version]`                                            | Install and verify FFmpeg on Linux.                          |
+| elastic   | `elastic_cert_finger`  | `kscript elastic_cert_finger ./ca.crt`                           | `<cert_file>`                                          | Generate Elasticsearch certificate SHA256 fingerprint.       |
+| elastic   | `kibana_manage`        | `kscript kibana_manage export --host=localhost --index=log-*`    | `[subcommand] [options]`                               | Kibana automation: space, index, user, role management.      |
+| ci        | `jenkins_manage`       | `kscript jenkins_manage list --host=jenkins.local`               | `[subcommand] [options]`                               | Jenkins job export/import automation.                        |
+| cloud     | `aws_s3`               | `kscript aws_s3 --file local.txt --bucket my-bucket ...`         | `--file --bucket --key --region --access_key --secret_key` | Upload a file to AWS S3 for testing.                         |
+| finance   | `usd_rate`             | `kscript usd_rate CNY`                                           | `[currency_code]`                                      | Get latest USD exchange rates.                               |
 
 ---
 
 ## ⚡ Shell 自动补全 & 配置示例
 
-- **首次安装/升级自动为 zsh/bash 部署补全脚本，并生成 `~/.kscript/.env` 配置示例**
+- 首次安装/升级自动为 zsh/bash 部署补全脚本，并生成 `~/.kscript/.env` 配置示例
 - 补全脚本路径：
   - zsh: `~/.zsh/completions/_kscript`
   - bash: `~/.bash_completion.d/kscript`
@@ -153,7 +145,7 @@ LOG=1
 
 ## 🧑‍💻 插件开发规范
 - 插件文件统一放在 `lib/kscript/plugins/kk_xxx_utils.rb`
-- 类名如 `KkApnicUtils`，自动注册为 `apnic` 命令
+- 类名如 `KkApnicIpUtils`，自动注册为 `apnic_ip` 命令
 - 支持 `self.description`、`self.usage`、`self.arguments`、`self.group`、`self.author`
 - 输出统一用 `logger.kinfo`/`logger.kerror`，支持结构化日志
 - 兼容多余参数，避免 ArgumentError
@@ -172,7 +164,7 @@ LOG=1
 ## 📦 依赖与兼容性
 
 - Ruby >= 3.0
-- 依赖：bcrypt, http, nokogiri, thor, aws-sdk-s3 等
+- 依赖：bcrypt, http, nokogiri, thor, aws-sdk-s3, httpx 等
 - 支持 macOS、Linux，部分工具支持 Windows
 
 ---

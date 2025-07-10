@@ -6,10 +6,9 @@
 # https://opensource.org/licenses/MIT
 
 require 'kscript'
-require 'httpx'
 
 module Kscript
-  class KkShUtils < Base
+  class KkShellHelperUtils < Base
     CHT_SH_URL = 'https://cht.sh'
 
     attr_reader :command
@@ -17,7 +16,7 @@ module Kscript
     # Initialize with shell command to look up
     # @param command [String] command to get help for
     def initialize(*args, **opts)
-      super(*args, **opts)
+      super
       @command = args.join(' ').strip
     end
 
@@ -44,7 +43,7 @@ module Kscript
     # Fetch and display command documentation
     def fetch_help(command)
       response = make_request(command)
-      response = response.is_a?(Array) ? response.first : response
+      response = response.first if response.is_a?(Array)
       puts response.body
     rescue StandardError => e
       display_error(e)
@@ -55,7 +54,7 @@ module Kscript
     end
 
     def self.usage
-      "kscript sh 'ls'\nkscript sh 'echo hello'"
+      "kscript shell_helper 'ls'\nkscript shell_helper 'echo hello'"
     end
 
     def self.group
@@ -67,7 +66,7 @@ module Kscript
     end
 
     def self.description
-      'Query sh command usage and cheatsheets.'
+      'Query shell command usage and cheatsheets.'
     end
 
     private
@@ -75,6 +74,12 @@ module Kscript
     # Make HTTP request to cheat.sh
     # @return [HTTPX::Response] response from cheat.sh
     def make_request(command)
+      begin
+        require 'httpx'
+        require 'uri'
+      rescue LoadError
+        abort 'Missing dependency: httpx. Please run: gem install httpx'
+      end
       HTTPX.with(
         headers: {
           'User-Agent' => 'curl/8.0.1',

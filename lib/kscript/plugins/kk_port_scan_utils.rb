@@ -8,7 +8,7 @@
 require 'kscript'
 
 module Kscript
-  class KkPortscanUtils < Base
+  class KkPortScanUtils < Base
     attr_reader :host, :ports, :thread_count
 
     # Initialize the scanner with target host and port range
@@ -16,7 +16,7 @@ module Kscript
     # @param ports [Array<Integer>] list of ports to scan
     # @param thread_count [Integer] number of concurrent threads
     def initialize(*args, **opts)
-      super(*args, **opts)
+      super
       @target = args[0]
       @ports = parse_ports(args[1] || (1..1024))
       @thread_count = (opts[:thread_count] || 50).to_i
@@ -98,7 +98,7 @@ module Kscript
     end
 
     def self.usage
-      "kscript portscan 192.168.1.1\nkscript portscan example.com 22,80,443 100\nkscript portscan 192.168.1.1 1..1024 200"
+      "kscript port_scan 192.168.1.1\nkscript port_scan example.com 22,80,443 100\nkscript port_scan 192.168.1.1 1..1024 200"
     end
 
     def self.group

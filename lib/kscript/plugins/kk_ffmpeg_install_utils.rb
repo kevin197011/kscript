@@ -8,9 +8,9 @@
 require 'kscript'
 
 module Kscript
-  class KkFfmpegUtils < Base
+  class KkFfmpegInstallUtils < Base
     def initialize(*args, **opts)
-      super(*args, **opts)
+      super
     end
 
     def run
@@ -28,7 +28,7 @@ module Kscript
     end
 
     def self.usage
-      "kscript ffmpeg 6.0\nkscript ffmpeg latest"
+      "kscript ffmpeg_install 6.0\nkscript ffmpeg_install latest"
     end
 
     def self.group

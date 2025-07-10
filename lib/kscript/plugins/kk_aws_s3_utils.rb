@@ -17,14 +17,14 @@ module Kscript
   class KkAwsS3Utils < Base
     # 初始化，支持所有参数通过 CLI 传递
     def initialize(*args, **opts)
-      super(*args, **opts)
+      super
       # 兼容 --file test.txt 以及 --file=test.txt
       @file = opts[:file] || args[0]
-      @bucket = opts[:bucket] || args[1] || ENV['AWS_BUCKET']
+      @bucket = opts[:bucket] || args[1] || ENV.fetch('AWS_BUCKET', nil)
       @key = opts[:key] || args[2]
-      @region = opts[:region] || ENV['AWS_REGION']
-      @access_key = opts[:access_key] || ENV['AWS_ACCESS_KEY_ID']
-      @secret_key = opts[:secret_key] || ENV['AWS_SECRET_ACCESS_KEY']
+      @region = opts[:region] || ENV.fetch('AWS_REGION', nil)
+      @access_key = opts[:access_key] || ENV.fetch('AWS_ACCESS_KEY_ID', nil)
+      @secret_key = opts[:secret_key] || ENV.fetch('AWS_SECRET_ACCESS_KEY', nil)
     end
 
     # 主入口

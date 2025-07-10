@@ -8,7 +8,7 @@
 require 'kscript'
 
 module Kscript
-  class KkLvmUtils < Base
+  class KkLvmManageUtils < Base
     DEFAULT_CONFIG = {
       device: '/dev/sdb',
       volume_group: 'vg_data',
@@ -21,7 +21,7 @@ module Kscript
     # Initialize the LVM mounter with configuration
     # @param config [Hash] configuration options
     def initialize(*args, **opts)
-      super(*args, **opts)
+      super
       @config = DEFAULT_CONFIG.merge(opts)
     end
 
@@ -47,7 +47,7 @@ module Kscript
     end
 
     def self.usage
-      "kscript lvm /dev/sda2 /mnt/data\nkscript lvm /dev/vg0/lv_home /mnt/home"
+      "kscript lvm_manage /dev/sda2 /mnt/data\nkscript lvm_manage /dev/vg0/lv_home /mnt/home"
     end
 
     def self.group

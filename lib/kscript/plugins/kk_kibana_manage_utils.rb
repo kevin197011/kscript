@@ -8,9 +8,9 @@
 require 'kscript'
 
 module Kscript
-  class KkKibanaUtils < Base
+  class KkKibanaManageUtils < Base
     def initialize(*args, **opts)
-      super(*args, **opts)
+      super
       project_name, project_env, base_url, username, password = args
       @base_url = base_url
       @username = username
@@ -158,7 +158,7 @@ module Kscript
     end
 
     def self.usage
-      "kscript kibana export --host=localhost --index=log-*\nkscript kibana import --file=dashboard.json"
+      "kscript kibana_manage export --host=localhost --index=log-*\nkscript kibana_manage import --file=dashboard.json"
     end
 
     def self.group
@@ -191,23 +191,23 @@ module Kscript
     # Construct the body for creating an index
     def index_body(index_name, uuid)
       {
-        "contentTypeId": 'index-pattern',
-        "data": {
-          "fieldAttrs": '{}',
-          "title": "#{index_name}*",
-          "timeFieldName": '@timestamp',
-          "sourceFilters": '[]',
-          "fields": '[]',
-          "fieldFormatMap": '{}',
-          "runtimeFieldMap": '{}',
-          "name": index_name,
-          "allowHidden": false
+        contentTypeId: 'index-pattern',
+        data: {
+          fieldAttrs: '{}',
+          title: "#{index_name}*",
+          timeFieldName: '@timestamp',
+          sourceFilters: '[]',
+          fields: '[]',
+          fieldFormatMap: '{}',
+          runtimeFieldMap: '{}',
+          name: index_name,
+          allowHidden: false
         },
-        "options": {
-          "id": uuid,
-          "overwrite": false
+        options: {
+          id: uuid,
+          overwrite: false
         },
-        "version": 1
+        version: 1
       }
     end
 

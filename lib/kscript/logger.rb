@@ -5,23 +5,27 @@ module Kscript
   class Logger
     LEVELS = %i[debug info warn error fatal unknown].freeze
 
-    # 极客风格终端输出
+    # Colorful output
     COLORS = {
       info: "\e[32m", # green
       warn: "\e[33m", # yellow
       error: "\e[31m", # red
       debug: "\e[90m", # gray
+      fatal: "\e[35m", # magenta
+      unknown: "\e[36m", # cyan
       reset: "\e[0m"
     }.freeze
 
     def initialize(service: 'kscript', level: :info, out: $stdout, human_output: nil)
+      require 'json'
+      require 'time'
       @service = service
       @logger = ::Logger.new(out)
       @logger.level = ::Logger.const_get(level.to_s.upcase)
       @human_output = human_output
     end
 
-    # 允许外部设置输出模式
+    # 设置人类可读输出模式
     def set_human_output(val)
       @human_output = val
     end
@@ -44,6 +48,7 @@ module Kscript
       end
     end
 
+    # 结构化日志输出
     def log(level, message, context = {})
       entry = {
         timestamp: Time.now.utc.iso8601,
@@ -55,7 +60,7 @@ module Kscript
       @logger.send(level, entry.to_json)
     end
 
-    # 终端输出
+    # 终端输出（带颜色、trace、时间等）
     def klog(level, message, context = {})
       if human_output?
         puts "[#{level.to_s.upcase}] #{message} #{context.map { |k, v| "#{k}=#{v}" }.join(' ')}".strip
@@ -72,7 +77,7 @@ module Kscript
       end
     end
 
-    # 便捷方法
+    # 便捷方法（info/warn/error/debug）
     def kinfo(msg, ctx = {})
       klog(:info, msg, ctx)
     end

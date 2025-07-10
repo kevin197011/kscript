@@ -8,9 +8,9 @@
 require 'kscript'
 
 module Kscript
-  class KkJenkinsUtils < Base
+  class KkJenkinsManageUtils < Base
     def initialize(*args, **opts)
-      super(*args, **opts)
+      super
       jenkins_url, user, password = args
       @jenkins_url = jenkins_url
       @user = user
@@ -106,7 +106,7 @@ module Kscript
     end
 
     def self.usage
-      "kscript jenkins list --host=jenkins.local\nkscript jenkins trigger --job=build"
+      "kscript jenkins_manage list --host=jenkins.local\nkscript jenkins_manage trigger --job=build"
     end
 
     def self.group

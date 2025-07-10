@@ -8,7 +8,7 @@
 require 'kscript'
 
 module Kscript
-  class KkEsFingerprintUtils < Base
+  class KkElasticCertFingerUtils < Base
     DEFAULT_CERT_PATH = 'elasticsearch.crt'
 
     attr_reader :cert_path
@@ -16,7 +16,7 @@ module Kscript
     # Initialize with certificate path
     # @param cert_path [String] path to the certificate file
     def initialize(*args, **opts)
-      super(*args, **opts)
+      super
       @cert_path = opts[:cert_path] || self.class::DEFAULT_CERT_PATH
     end
 
@@ -31,7 +31,7 @@ module Kscript
     end
 
     def self.usage
-      "kscript es_fingerprint <cert_file>\nkscript es_fingerprint ./ca.crt"
+      "kscript elastic_cert_finger <cert_file>\nkscript elastic_cert_finger ./ca.crt"
     end
 
     def self.group

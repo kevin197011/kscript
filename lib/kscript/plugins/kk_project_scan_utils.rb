@@ -8,9 +8,9 @@
 require 'kscript'
 
 module Kscript
-  class KkProjscanUtils < Base
+  class KkProjectScanUtils < Base
     def initialize(*args, **opts)
-      super(*args, **opts)
+      super
     end
 
     def run
@@ -34,7 +34,7 @@ module Kscript
     end
 
     def self.usage
-      "kscript projscan ~/projects/src\nkscript projscan /opt --type=go"
+      "kscript project_scan ~/projects/src\nkscript project_scan /opt --type=go"
     end
 
     def self.group
@@ -56,7 +56,7 @@ module Kscript
 
     def scan_projects
       projects = []
-      Dir.glob(File.join(@src_path, '*')).sort.each do |path|
+      Dir.glob(File.join(@src_path, '*')).each do |path|
         next unless File.directory?(path)
         next unless git_project?(path)
 

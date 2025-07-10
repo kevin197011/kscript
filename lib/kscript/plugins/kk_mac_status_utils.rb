@@ -8,9 +8,9 @@
 require 'kscript'
 
 module Kscript
-  class KkSyscheckUtils < Base
+  class KkMacStatusUtils < Base
     def initialize(*_args, **opts)
-      super(**opts.merge(service: 'kk_syscheck'))
+      super(**opts.merge(service: 'kk_mac_status'))
     end
 
     def run
@@ -24,19 +24,12 @@ module Kscript
       logger.kinfo("📅 Date Time: #{Time.now}")
       logger.kinfo('')
 
-      # CPU Usage
-      logger.kinfo('===============================')
-      logger.kinfo(' CPU Usage (Top 10)')
-      logger.kinfo('===============================')
-      cpu_output = `ps aux | sort -nrk 3 | head -n 10`
-      logger.kinfo(cpu_output)
-
-      # Memory Usage
-      logger.kinfo('===============================')
-      logger.kinfo(' Memory Usage (Top 10)')
-      logger.kinfo('===============================')
-      mem_output = `ps aux | sort -nrk 4 | head -n 10`
-      logger.kinfo(mem_output)
+      # Top 10 by CPU
+      print_header('Top 10 Processes by CPU Usage')
+      print_process_list(:cpu)
+      # Top 10 by Memory
+      print_header('Top 10 Processes by Memory Usage')
+      print_process_list(:mem)
 
       # GPU Usage
       if `which powermetrics`.strip.empty?
@@ -77,6 +70,25 @@ module Kscript
       logger.kinfo("\n✅ System resource check completed!")
     end
 
+    def print_header(title)
+      logger.kinfo('')
+      logger.kinfo('===============================')
+      logger.kinfo(" #{title}")
+      logger.kinfo('===============================')
+    end
+
+    def print_process_list(sort_field)
+      lines = `ps aux`.split("\n")
+      lines.shift
+      processes = lines.map { |line| line.split(/\s+/, 11) }
+      index = sort_field == :cpu ? 2 : 3
+      top = processes.sort_by { |p| -p[index].to_f }.first(10)
+      logger.kinfo('USER       PID      %CPU  %MEM  COMMAND   ')
+      top.each do |p|
+        logger.kinfo(format('%-10s %-8s %-5s %-5s %-10s', p[0], p[1], p[2], p[3], p[10][0..30]))
+      end
+    end
+
     def self.description
       'Show macOS system resource monitor report.'
     end
@@ -86,7 +98,7 @@ module Kscript
     end
 
     def self.usage
-      "kscript syscheck\nkscript syscheck --detail"
+      "kscript mac_status\nkscript mac_status --detail"
     end
 
     def self.group

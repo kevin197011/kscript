@@ -8,7 +8,7 @@
 require 'kscript'
 
 module Kscript
-  class KkApnicUtils < Base
+  class KkApnicIpUtils < Base
     attr_reader :country_sn, :cache_file
 
     # Initialize class instance, set country code and cache file path
@@ -69,7 +69,7 @@ module Kscript
     end
 
     def self.usage
-      "kscript apnic CN\nkscript apnic US"
+      "kscript apnic_ip CN\nkscript apnic_ip US"
     end
 
     def self.group

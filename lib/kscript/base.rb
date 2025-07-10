@@ -37,7 +37,7 @@ module Kscript
 
     # 判断是否为人性化输出模式（无 --log/--log-level 参数且 ENV['LOG'] 未设置）
     def human_output?
-      !(ARGV.include?('--log') || ARGV.include?('--log-level') || ENV['LOG'])
+      !(ARGV.include?('--log') || ARGV.include?('--log-level') || ENV.fetch('LOG', nil))
     end
   end
 end

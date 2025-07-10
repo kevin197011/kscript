@@ -8,11 +8,11 @@
 require 'kscript'
 
 module Kscript
-  class KkRenameUtils < Base
+  class KkFileRenameUtils < Base
     attr_reader :source_pattern, :target_pattern, :directory
 
     def initialize(*args, **opts)
-      super(*args, **opts)
+      super
       @source_pattern = args[0]
       @target_pattern = args[1]
       @directory = args[2] || Dir.pwd
@@ -35,7 +35,7 @@ module Kscript
     end
 
     def self.usage
-      "kscript rename foo bar ./src\nkscript rename 'test' 'prod' ~/projects"
+      "kscript file_rename foo bar ./src\nkscript file_rename 'test' 'prod' ~/projects"
     end
 
     def self.group

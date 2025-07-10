@@ -8,9 +8,9 @@
 require 'kscript'
 
 module Kscript
-  class KkOptimizeUtils < Base
+  class KkMacOptimizeUtils < Base
     def initialize(*args, **opts)
-      super(*args, **opts)
+      super
     end
 
     def run(*args, **_opts)
@@ -74,7 +74,7 @@ module Kscript
     end
 
     def self.usage
-      'kscript optimize'
+      'kscript mac_optimize'
     end
 
     def self.group

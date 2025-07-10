@@ -10,7 +10,7 @@ require 'kscript'
 module Kscript
   class KkWgPassUtils < Base
     def initialize(*args, **opts)
-      super(*args, **opts)
+      super
     end
 
     def run

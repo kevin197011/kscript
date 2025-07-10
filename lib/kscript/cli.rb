@@ -70,7 +70,7 @@ module Kscript
       orig_command = info[:name].to_s.sub(/^kk_/, '')
       # shell -> sh
       command = orig_command == 'shell' ? 'sh' : orig_command
-      command = reserved.include?(command) ? "#{command}_cmd" : command
+      command = "#{command}_cmd" if reserved.include?(command)
       klass = info[:class]
       desc command,
            (info[:description] || 'No description') + (reserved.include?(orig_command) ? " (original: #{orig_command})" : '')
@@ -113,7 +113,7 @@ module Kscript
       else
         puts bold('Loaded environment variables:')
         keys.sort.each do |k|
-          v = ENV[k]
+          v = ENV.fetch(k, nil)
           puts green(k.ljust(28)) + gray('=') + cyan(v)
         end
       end
