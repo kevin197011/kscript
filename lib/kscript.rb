@@ -27,11 +27,11 @@ require 'thor'
 require 'aws-sdk-s3'
 require 'dotenv'
 
-require 'kscript/config'
-require 'kscript/plugins'
-require 'kscript/base'
-require 'kscript/logger'
-require 'kscript/version'
+require_relative 'kscript/config'
+require_relative 'kscript/base'
+require_relative 'kscript/plugins'
+require_relative 'kscript/logger'
+require_relative 'kscript/version'
 
 module Kscript
   # fluentd 风格插件注册机制

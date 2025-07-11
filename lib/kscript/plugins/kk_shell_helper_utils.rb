@@ -5,10 +5,10 @@
 # This software is released under the MIT License.
 # https://opensource.org/licenses/MIT
 
-require 'kscript'
+# require 'kscript'
 
 module Kscript
-  class KkShellHelperUtils < Base
+  class KkShellHelperUtils < Kscript::Base
     CHT_SH_URL = 'https://cht.sh'
 
     attr_reader :command

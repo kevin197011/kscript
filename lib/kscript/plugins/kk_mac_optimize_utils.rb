@@ -5,10 +5,10 @@
 # This software is released under the MIT License.
 # https://opensource.org/licenses/MIT
 
-require 'kscript'
+# require 'kscript'
 
 module Kscript
-  class KkMacOptimizeUtils < Base
+  class KkMacOptimizeUtils < Kscript::Base
     def initialize(*args, **opts)
       super
     end

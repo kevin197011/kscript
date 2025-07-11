@@ -5,10 +5,10 @@
 # This software is released under the MIT License.
 # https://opensource.org/licenses/MIT
 
-require 'kscript'
+# require 'kscript' # 移除此行
 
 module Kscript
-  class KkApnicIpUtils < Base
+  class KkApnicIpUtils < Kscript::Base
     attr_reader :country_sn, :cache_file
 
     # Initialize class instance, set country code and cache file path

@@ -5,10 +5,10 @@
 # This software is released under the MIT License.
 # https://opensource.org/licenses/MIT
 
-require 'kscript'
+# require 'kscript'
 
 module Kscript
-  class KkMacStatusUtils < Base
+  class KkMacStatusUtils < Kscript::Base
     def initialize(*_args, **opts)
       super(**opts.merge(service: 'kk_mac_status'))
     end

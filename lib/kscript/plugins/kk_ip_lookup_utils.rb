@@ -5,10 +5,10 @@
 # This software is released under the MIT License.
 # https://opensource.org/licenses/MIT
 
-require 'kscript'
+# require 'kscript'
 
 module Kscript
-  class KkIpLookupUtils < Base
+  class KkIpLookupUtils < Kscript::Base
     IP_API_BASE_URL = 'http://ip-api.com/json'
     IP_CHECK_URL = 'https://api.ipify.org?format=json'
 

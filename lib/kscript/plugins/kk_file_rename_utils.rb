@@ -5,10 +5,10 @@
 # This software is released under the MIT License.
 # https://opensource.org/licenses/MIT
 
-require 'kscript'
+# require 'kscript'
 
 module Kscript
-  class KkFileRenameUtils < Base
+  class KkFileRenameUtils < Kscript::Base
     attr_reader :source_pattern, :target_pattern, :directory
 
     def initialize(*args, **opts)

@@ -5,10 +5,10 @@
 # This software is released under the MIT License.
 # https://opensource.org/licenses/MIT
 
-require 'kscript'
+# require 'kscript'
 
 module Kscript
-  class KkPortScanUtils < Base
+  class KkPortScanUtils < Kscript::Base
     attr_reader :host, :ports, :thread_count
 
     # Initialize the scanner with target host and port range

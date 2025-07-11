@@ -5,10 +5,10 @@
 # This software is released under the MIT License.
 # https://opensource.org/licenses/MIT
 
-require 'kscript'
+# require 'kscript'
 
 module Kscript
-  class KkKibanaManageUtils < Base
+  class KkKibanaManageUtils < Kscript::Base
     def initialize(*args, **opts)
       super
       project_name, project_env, base_url, username, password = args

@@ -5,10 +5,10 @@
 # This software is released under the MIT License.
 # https://opensource.org/licenses/MIT
 
-require 'kscript'
+# require 'kscript'
 
 module Kscript
-  class KkWgAclUtils < Base
+  class KkWgAclUtils < Kscript::Base
     WIREGUARD_PORT = 51_821
     ALLOWED_IPS = %w[127.0.0.1].freeze
 

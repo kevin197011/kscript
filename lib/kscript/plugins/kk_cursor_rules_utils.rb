@@ -5,11 +5,10 @@
 # This software is released under the MIT License.
 # https://opensource.org/licenses/MIT
 
-require 'fileutils'
-require 'kscript'
+# require 'kscript'
 
 module Kscript
-  class KkCursorRulesUtils < Base
+  class KkCursorRulesUtils < Kscript::Base
     def initialize(*_args, **opts)
       super(**opts.merge(service: 'kk_cursor_rules'))
     end

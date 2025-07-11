@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'kscript'
+require_relative '../kscript'
 
 module Kscript
   # Base class for all kscript scripts

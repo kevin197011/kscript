@@ -5,10 +5,10 @@
 # This software is released under the MIT License.
 # https://opensource.org/licenses/MIT
 
-require 'kscript'
+# require 'kscript'
 
 module Kscript
-  class KkFfmpegInstallUtils < Base
+  class KkFfmpegInstallUtils < Kscript::Base
     def initialize(*args, **opts)
       super
     end

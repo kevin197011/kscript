@@ -5,13 +5,11 @@
 # This software is released under the MIT License.
 # https://opensource.org/licenses/MIT
 
-require 'kscript'
-
 require 'net/http'
 require 'json'
 
 module Kscript
-  class KkUsdRateUtils < Base
+  class KkUsdRateUtils < Kscript::Base
     API_URL = 'https://api.exchangerate-api.com/v4/latest/USD'
 
     def initialize(currency_code = 'CNY', *args, **opts)

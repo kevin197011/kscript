@@ -5,10 +5,10 @@
 # This software is released under the MIT License.
 # https://opensource.org/licenses/MIT
 
-require 'kscript'
+# require 'kscript'
 
 module Kscript
-  class KkJenkinsManageUtils < Base
+  class KkJenkinsManageUtils < Kscript::Base
     def initialize(*args, **opts)
       super
       jenkins_url, user, password = args

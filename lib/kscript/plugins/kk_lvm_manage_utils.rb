@@ -5,10 +5,10 @@
 # This software is released under the MIT License.
 # https://opensource.org/licenses/MIT
 
-require 'kscript'
+# require 'kscript'
 
 module Kscript
-  class KkLvmManageUtils < Base
+  class KkLvmManageUtils < Kscript::Base
     DEFAULT_CONFIG = {
       device: '/dev/sdb',
       volume_group: 'vg_data',

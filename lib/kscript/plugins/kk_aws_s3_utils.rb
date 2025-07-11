@@ -5,7 +5,7 @@
 # This software is released under the MIT License.
 # https://opensource.org/licenses/MIT
 
-require 'kscript'
+# require 'kscript'
 
 # AWS S3 文件上传测试工具
 # 用法示例：
@@ -14,7 +14,7 @@ require 'kscript'
 # 依赖：aws-sdk-s3（已在主入口 require）
 
 module Kscript
-  class KkAwsS3Utils < Base
+  class KkAwsS3Utils < Kscript::Base
     # 初始化，支持所有参数通过 CLI 传递
     def initialize(*args, **opts)
       super

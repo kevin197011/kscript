@@ -5,10 +5,10 @@
 # This software is released under the MIT License.
 # https://opensource.org/licenses/MIT
 
-require 'kscript'
+# require 'kscript'
 
 module Kscript
-  class KkElasticCertFingerUtils < Base
+  class KkElasticCertFingerUtils < Kscript::Base
     DEFAULT_CERT_PATH = 'elasticsearch.crt'
 
     attr_reader :cert_path

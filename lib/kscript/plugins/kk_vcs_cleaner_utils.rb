@@ -5,10 +5,10 @@
 # This software is released under the MIT License.
 # https://opensource.org/licenses/MIT
 
-require 'kscript'
+# require 'kscript'
 
 module Kscript
-  class KkVcsCleanerUtils < Base
+  class KkVcsCleanerUtils < Kscript::Base
     DEFAULT_RETAIN_VERSIONS = 10
 
     attr_reader :source_path, :retain_count
