@@ -114,4 +114,32 @@ kscript port_scan 192.168.1.1 --log-level=debug
 | project   | `vcs_cleaner`          | `kscript vcs_cleaner ~/projects/src`                             | `[src_path]`                                           | Clean old source code versions, keep N latest.               |
 | project   | `file_rename`          | `kscript file_rename foo bar ./src`                              | `<pattern> <replacement> [path]`                       | Batch rename files by pattern.                               |
 | system    | `shell_helper`         | `kscript shell_helper 'ls'`                                      | `[subcommand] [args...]`                               | Query shell command usage and cheatsheets.                   |
-| system    | `lvm_manage`           | `
+| system    | `lvm_manage`           | `kscript lvm_manage /dev/sda2 /mnt/data`                        | `<device> <mount_point>`                                 | Mount and manage Linux LVM volumes.                          |
+
+---
+
+## 🤝 贡献指南
+
+欢迎提交 Issue 和 Pull Request！请遵循 [Conventional Commits](https://www.conventionalcommits.org/) 规范，确保所有代码通过 Linter 检查。详细贡献流程见 CONTRIBUTING.md（如有）。
+
+## ❓ 常见问题
+
+- **如何启用 shell 补全？**
+  安装后自动生成补全脚本，重启 shell 或手动 `source ~/.zshrc`/`~/.bashrc`。
+- **如何切换日志模式？**
+  所有命令支持 `--log` 或 `--log-level=debug`，详见上文示例。
+- **如何自定义配置？**
+  编辑 `~/.kscript/.env`，可配置 AWS、日志等参数。
+
+如有更多问题，欢迎提交 [Issue](https://github.com/kevin197011/kscript/issues)。
+
+## 📬 联系方式 & 致谢
+
+- 作者: [kk (kevin197011)](https://github.com/kevin197011)
+- 邮箱: kevin197011@outlook.com
+
+感谢所有贡献者和开源依赖项目！
+
+## 📄 License
+
+This project is licensed under the [MIT License](LICENSE).
