@@ -21,20 +21,16 @@ _  ,<  _(__  )/ /__ _  /   _  / __  /_/ / /_
 ```mermaid
 graph TD
   A[用户终端/脚本] -->|命令行| B(kscript CLI)
-  B --> C1[插件系统]
-  C1 --> D1[网络插件]
-  C1 --> D2[项目插件]
-  C1 --> D3[系统插件]
-  C1 --> D4[云/CI插件]
-  B --> E[日志系统]
+  B --> C[插件注册与分发]
+  B --> D[日志系统]
+  B --> E[配置加载]
   B --> F[Shell补全生成]
-  B --> G[配置加载]
-  B --> H[结构化日志/美化输出]
-  B --> I[CI/CD自动发布]
-  F --> J1[zsh补全脚本]
-  F --> J2[bash补全脚本]
-  I --> K[GitHub Actions]
-  K --> L[RubyGems发布]
+  B --> G[结构化日志/美化输出]
+  B --> H[CI/CD自动发布]
+  F --> I1[zsh补全脚本]
+  F --> I2[bash补全脚本]
+  H --> J[GitHub Actions]
+  J --> K[RubyGems发布]
 ```
 
 ## ✨ 特性亮点
@@ -118,91 +114,4 @@ kscript port_scan 192.168.1.1 --log-level=debug
 | project   | `vcs_cleaner`          | `kscript vcs_cleaner ~/projects/src`                             | `[src_path]`                                           | Clean old source code versions, keep N latest.               |
 | project   | `file_rename`          | `kscript file_rename foo bar ./src`                              | `<pattern> <replacement> [path]`                       | Batch rename files by pattern.                               |
 | system    | `shell_helper`         | `kscript shell_helper 'ls'`                                      | `[subcommand] [args...]`                               | Query shell command usage and cheatsheets.                   |
-| system    | `lvm_manage`           | `kscript lvm_manage /dev/sda2 /mnt/data`                         | `<device> <mount_point>`                               | Mount and manage Linux LVM volumes.                          |
-| macos     | `mac_status`           | `kscript mac_status`                                             |                                                        | Show macOS system resource monitor report.                   |
-| macos     | `mac_optimize`         | `kscript mac_optimize`                                           |                                                        | Optimize macOS system performance.                           |
-| media     | `ffmpeg_install`       | `kscript ffmpeg_install 6.0`                                     | `[version]`                                            | Install and verify FFmpeg on Linux.                          |
-| elastic   | `elastic_cert_finger`  | `kscript elastic_cert_finger ./ca.crt`                           | `<cert_file>`                                          | Generate Elasticsearch certificate SHA256 fingerprint.       |
-| elastic   | `kibana_manage`        | `kscript kibana_manage export --host=localhost --index=log-*`    | `[subcommand] [options]`                               | Kibana automation: space, index, user, role management.      |
-| ci        | `jenkins_manage`       | `kscript jenkins_manage list --host=jenkins.local`               | `[subcommand] [options]`                               | Jenkins job export/import automation.                        |
-| cloud     | `aws_s3`               | `kscript aws_s3 --file local.txt --bucket my-bucket ...`         | `--file --bucket --key --region --access_key --secret_key` | Upload a file to AWS S3 for testing.                         |
-| finance   | `usd_rate`             | `kscript usd_rate CNY`                                           | `[currency_code]`                                      | Get latest USD exchange rates.                               |
-
----
-
-## ⚡ Shell 自动补全 & 配置示例
-
-- 首次安装/升级自动为 zsh/bash 部署补全脚本，并生成 `~/.kscript/.env` 配置示例
-- 补全脚本路径：
-  - zsh: `~/.zsh/completions/_kscript`
-  - bash: `~/.bash_completion.d/kscript`
-- 配置文件路径：
-  - `~/.kscript/.env`（自动生成，支持 ENV 变量注释说明）
-- 手动生成补全：
-  ```bash
-  kscript completion zsh > ~/.zsh/completions/_kscript
-  kscript completion bash > ~/.bash_completion.d/kscript
-  ```
-
----
-
-## ⚙️ 全局配置（.env 格式）
-
-所有全局参数均通过 `~/.kscript/.env` 文件（自动生成，标准 .env 格式）或环境变量注入。例如：
-
-```env
-# AWS S3 upload config
-AWS_BUCKET=my-bucket
-AWS_REGION=ap-northeast-1
-AWS_ACCESS_KEY_ID=xxx
-AWS_SECRET_ACCESS_KEY=yyy
-
-# Logging config
-KSCRIPT_LOG_LEVEL=info
-LOG=1
-```
----
-
-## 🧑‍💻 插件开发规范
-- 插件文件统一放在 `lib/kscript/plugins/kk_xxx_utils.rb`
-- 类名如 `KkApnicIpUtils`，自动注册为 `apnic_ip` 命令
-- 支持 `self.description`、`self.usage`、`self.arguments`、`self.group`、`self.author`
-- 输出统一用 `logger.kinfo`/`logger.kerror`，支持结构化日志
-- 兼容多余参数，避免 ArgumentError
-- 依赖统一在主入口 require，插件只需 require 'kscript'
-
----
-
-## 🚚 CI/CD 自动发布
-
-- `.github/workflows/gem-push.yml`：main 分支和 PR 自动构建、tag push 自动发布到 RubyGems
-- 需在 GitHub secrets 配置 `RUBYGEMS_API_KEY`
-- [CI 状态与历史](https://github.com/kevin197011/kscript/actions/workflows/gem-push.yml)
-
----
-
-## 📦 依赖与兼容性
-
-- Ruby >= 3.0
-- 依赖：bcrypt, http, nokogiri, thor, aws-sdk-s3, httpx 等
-- 支持 macOS、Linux，部分工具支持 Windows
-
----
-
-## 📄 许可证
-
-MIT License. 详见 [LICENSE](LICENSE)。
-
----
-
-## 🤝 贡献
-
-1. Fork & PR
-2. 遵循输出与插件开发规范
-3. 保持文档与代码同步
-
----
-
-如需更多示例、插件开发指导或遇到问题，欢迎提 issue 或 PR！
-
-
+| system    | `lvm_manage`           | `
