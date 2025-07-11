@@ -31,7 +31,6 @@ require 'kscript/config'
 require 'kscript/plugins'
 require 'kscript/base'
 require 'kscript/logger'
-require 'kscript/utils'
 require 'kscript/version'
 
 module Kscript
