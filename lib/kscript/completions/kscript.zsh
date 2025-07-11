@@ -8,6 +8,7 @@ _kscript() {
     'elastic_cert_finger:kscript command'
     'ffmpeg_install:kscript command'
     'file_rename:kscript command'
+    'hn_jobs:kscript command'
     'ip_lookup:kscript command'
     'jenkins_manage:kscript command'
     'kibana_manage:kscript command'
