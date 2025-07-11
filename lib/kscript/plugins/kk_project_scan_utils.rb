@@ -13,8 +13,9 @@ module Kscript
       super
     end
 
-    def run
+    def run(*args, **_opts)
       with_error_handling do
+        @src_path = args[0] || @src_path || Dir.pwd
         scan_and_display
       end
     end

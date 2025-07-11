@@ -13,8 +13,9 @@ module Kscript
       super
     end
 
-    def run
+    def run(*args, **_opts)
       with_error_handling do
+        @length = (args[0] || 24).to_i
         generate
       end
     end

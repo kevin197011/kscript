@@ -17,8 +17,9 @@ module Kscript
       @currency_code = currency_code
     end
 
-    def run
+    def run(*args, **_opts)
       with_error_handling do
+        @currency_code = args[0] if args[0]
         fetch_rates
       end
     end
