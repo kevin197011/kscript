@@ -21,16 +21,20 @@ module Kscript
     # Download data from APNIC or read from cache
     def download_data
       if File.exist?(cache_file) && File.size?(cache_file)
-        logger.kinfo("Using cached data from #{cache_file}")
-      else
-        url = 'https://ftp.apnic.net/stats/apnic/delegated-apnic-latest'
-        response = HTTP.get(url)
-
-        raise "Failed to download the APNIC data. HTTP Status: #{response.status}" unless response.status.success?
-
-        File.write(cache_file, response.body.to_s)
-        logger.kinfo("Data downloaded and saved to #{cache_file}")
+        mtime = File.mtime(cache_file)
+        if Time.now - mtime < 86_400
+          logger.kinfo("Using cached data from #{cache_file} (updated #{mtime})")
+          return
+        else
+          logger.kinfo("Cache expired (last updated #{mtime}), downloading new data...")
+        end
       end
+      url = 'https://ftp.apnic.net/stats/apnic/delegated-apnic-latest'
+      response = HTTP.get(url)
+      raise "Failed to download the APNIC data. HTTP Status: #{response.status}" unless response.status.success?
+
+      File.write(cache_file, response.body.to_s)
+      logger.kinfo("Data downloaded and saved to #{cache_file}")
     end
 
     # Parse data and return IPv4 address ranges (CIDR format) for specified country
@@ -58,8 +62,9 @@ module Kscript
       32 - Math.log2(hosts).to_i
     end
 
-    def run
+    def run(*args, **_opts)
       with_error_handling do
+        @country_sn = args[0] if args[0]
         parse_ip_ranges
       end
     end
