@@ -5,7 +5,7 @@
 # This software is released under the MIT License.
 # https://opensource.org/licenses/MIT
 
-require 'net/http'
+require 'httpx'
 require 'json'
 
 module Kscript
@@ -25,9 +25,9 @@ module Kscript
     end
 
     def fetch_rates
-      uri = URI(API_URL)
-      response = Net::HTTP.get(uri)
-      data = JSON.parse(response)
+      response = HTTPX.get(API_URL)
+      response = response.first if response.is_a?(Array)
+      data = JSON.parse(response.body.to_s)
       if @currency_code && data['rates'][@currency_code.upcase]
         rate = data['rates'][@currency_code.upcase]
         logger.kinfo("1 USD = #{rate} #{@currency_code.upcase}")

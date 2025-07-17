@@ -5,7 +5,7 @@
 # This software is released under the MIT License.
 # https://opensource.org/licenses/MIT
 
-# require 'kscript'
+require 'httpx'
 
 module Kscript
   class KkKibanaManageUtils < Kscript::Base
@@ -33,7 +33,8 @@ module Kscript
     def space_exists?
       url = "#{@base_url}/api/spaces/space/#{@space_name}"
       response = client.get(url, headers: kbn_headers)
-      response.status.success?
+      response = response.first if response.is_a?(Array)
+      response.status == 200
     rescue StandardError => e
       logger.kerror("Error checking space existence: #{e.message}")
       false
@@ -51,7 +52,8 @@ module Kscript
       }
 
       response = client.post(url, json: body, headers: kbn_headers)
-      if response.status.success?
+      response = response.first if response.is_a?(Array)
+      if response.status == 200
         logger.kinfo("Space '#{@space_name}' created successfully!")
       else
         logger.kerror("Failed to create space '#{@space_name}': #{response.body}")
@@ -62,12 +64,17 @@ module Kscript
 
     # Return the HTTP client with authentication
     def client
-      @client ||= HTTP.basic_auth(user: @username, pass: @password)
+      @client ||= HTTPX.with(headers: { 'Authorization' => basic_auth_header })
+    end
+
+    def basic_auth_header
+      'Basic ' + Base64.strict_encode64("#{@username}:#{@password}")
     end
 
     # Fetch all indices from Kibana
     def indices
       response = client.get("#{@base_url}/api/index_management/indices", headers: kbn_headers)
+      response = response.first if response.is_a?(Array)
       handle_response(response) { |body| JSON.parse(body).map { |item| item['name'] } }
     end
 
@@ -83,7 +90,8 @@ module Kscript
           },
           'version' => 1
         }
-        client.post(url, json: body, headers: kbn_headers)
+        response = client.post(url, json: body, headers: kbn_headers)
+        response.first if response.is_a?(Array)
       end
     end
 
@@ -94,7 +102,8 @@ module Kscript
       body = index_body(index_name, uuid)
 
       response = client.post(url, json: body, headers: kbn_headers)
-      if response.status.success?
+      response = response.first if response.is_a?(Array)
+      if response.status == 200
         logger.kinfo("#{index_name} Index creation successful!")
       else
         handle_error(response, index_name)
@@ -136,7 +145,8 @@ module Kscript
           }
         ]
       }.to_json
-      client.put(url, body: request_body, headers: kbn_headers)
+      response = client.put(url, body: request_body, headers: kbn_headers)
+      response.first if response.is_a?(Array)
       logger.kinfo("Create #{@project_name} user role sucessed!")
     end
 
@@ -149,7 +159,8 @@ module Kscript
         'email' => "#{@project_name}@devops.io",
         'roles' => [@project_name]
       }.to_json
-      client.post(url, body: request_body, headers: kbn_headers)
+      response = client.post(url, body: request_body, headers: kbn_headers)
+      response.first if response.is_a?(Array)
       logger.kinfo("Create #{@project_name} user sucessed!")
     end
 
@@ -185,7 +196,9 @@ module Kscript
         'options' => { 'fields' => %w[title type typeMeta name] },
         'version' => 1
       }
-      JSON.parse(client.post(url, json: body, headers: kbn_headers))['result']['result']['hits']
+      response = client.post(url, json: body, headers: kbn_headers)
+      response = response.first if response.is_a?(Array)
+      JSON.parse(response.body)['result']['result']['hits']
     end
 
     # Construct the body for creating an index
@@ -218,7 +231,8 @@ module Kscript
 
     # Handle the response from Kibana
     def handle_response(response)
-      if response.status.success?
+      response = response.first if response.is_a?(Array)
+      if response.status == 200
         yield response.body
       else
         handle_error(response)

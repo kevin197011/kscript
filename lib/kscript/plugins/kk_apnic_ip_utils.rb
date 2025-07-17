@@ -5,7 +5,7 @@
 # This software is released under the MIT License.
 # https://opensource.org/licenses/MIT
 
-# require 'kscript' # 移除此行
+require 'httpx'
 
 module Kscript
   class KkApnicIpUtils < Kscript::Base
@@ -30,8 +30,9 @@ module Kscript
         end
       end
       url = 'https://ftp.apnic.net/stats/apnic/delegated-apnic-latest'
-      response = HTTP.get(url)
-      raise "Failed to download the APNIC data. HTTP Status: #{response.status}" unless response.status.success?
+      response = HTTPX.get(url)
+      response = response.first if response.is_a?(Array)
+      raise "Failed to download the APNIC data. HTTP Status: #{response.status}" unless response.status == 200
 
       File.write(cache_file, response.body.to_s)
       logger.kinfo("Data downloaded and saved to #{cache_file}")

@@ -20,8 +20,6 @@ require 'open3'
 require 'openssl'
 
 # 第三方 gem
-require 'http'
-require 'bcrypt'
 require 'nokogiri'
 require 'thor'
 require 'aws-sdk-s3'

@@ -5,7 +5,7 @@
 # This software is released under the MIT License.
 # https://opensource.org/licenses/MIT
 
-# require 'kscript'
+require 'httpx'
 
 module Kscript
   class KkJenkinsManageUtils < Kscript::Base
@@ -61,8 +61,9 @@ module Kscript
 
     def get_all_job_names
       url = "#{@jenkins_url}/api/json?tree=jobs[name]"
-      response = HTTP.get(url, headers: { 'Authorization' => @auth_header })
-      if response.status.success?
+      response = HTTPX.get(url, headers: { 'Authorization' => @auth_header })
+      response = response.first if response.is_a?(Array)
+      if response.status == 200
         jobs = JSON.parse(response.body.to_s)['jobs']
         jobs.map { |job| job['name'] }
       else
@@ -76,8 +77,9 @@ module Kscript
 
     def export_job(job_name)
       url = "#{@jenkins_url}/job/#{job_name}/config.xml"
-      response = HTTP.get(url, headers: { 'Authorization' => @auth_header })
-      return response.body.to_s if response.status.success?
+      response = HTTPX.get(url, headers: { 'Authorization' => @auth_header })
+      response = response.first if response.is_a?(Array)
+      return response.body.to_s if response.status == 200
 
       logger.kerror("Error exporting job #{job_name}: #{response.status}")
       nil
@@ -94,10 +96,11 @@ module Kscript
         create_new_job(job_name, config_xml)
       rescue StandardError
         logger.kinfo("Updating existing job #{job_name}")
-        HTTP.put(url, body: config_xml, headers: {
-                   'Authorization' => @auth_header,
-                   'Content-Type' => 'application/xml'
-                 })
+        response = HTTPX.put(url, body: config_xml, headers: {
+                               'Authorization' => @auth_header,
+                               'Content-Type' => 'application/xml'
+                             })
+        response.first if response.is_a?(Array)
       end
     end
 
@@ -125,11 +128,12 @@ module Kscript
 
     def create_new_job(job_name, config_xml)
       url = "#{@jenkins_url}/createItem?name=#{job_name}"
-      response = HTTP.post(url, body: config_xml, headers: {
-                             'Authorization' => @auth_header,
-                             'Content-Type' => 'application/xml'
-                           })
-      if response.status.success?
+      response = HTTPX.post(url, body: config_xml, headers: {
+                              'Authorization' => @auth_header,
+                              'Content-Type' => 'application/xml'
+                            })
+      response = response.first if response.is_a?(Array)
+      if response.status == 200
         logger.kinfo("Successfully created new job #{job_name}")
       else
         logger.kerror("Failed to create job #{job_name}: #{response.status}")
