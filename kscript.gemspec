@@ -38,6 +38,7 @@ Gem::Specification.new do |spec|
 
   # Runtime dependencies
   spec.add_dependency 'aws-sdk-s3'
+  spec.add_dependency 'concurrent-ruby'
   spec.add_dependency 'dotenv'
   spec.add_dependency 'httpx'
   spec.add_dependency 'nokogiri'

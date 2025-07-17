@@ -6,6 +6,7 @@
 # https://opensource.org/licenses/MIT
 
 # require 'kscript'
+require 'concurrent-ruby'
 
 module Kscript
   class KkPortScanUtils < Kscript::Base
@@ -36,29 +37,23 @@ module Kscript
     def scan
       msg = "Scanning #{@target} ports #{@ports} with concurrency=#{@thread_count}"
       logger.kinfo(msg)
-      queue = Queue.new
-      @ports.each { |port| queue << port }
-      threads = []
-      @thread_count.times do
-        threads << Thread.new do
-          until queue.empty?
-            port = nil
-            begin
-              port = queue.pop(true)
-            rescue ThreadError
-              break
-            end
-            begin
-              Socket.tcp(@target, port, connect_timeout: 0.5) do |_sock|
-                logger.kinfo('Port open', port: port)
-              end
-            rescue Errno::ECONNREFUSED, Errno::ETIMEDOUT, SocketError
-              # closed or filtered
-            end
+      pool = Concurrent::ThreadPoolExecutor.new(
+        min_threads: [2, @thread_count].min,
+        max_threads: @thread_count,
+        max_queue: @ports.size,
+        fallback_policy: :caller_runs
+      )
+      @ports.each do |port|
+        pool.post do
+          Socket.tcp(@target, port, connect_timeout: 0.5) do |_sock|
+            logger.kinfo('Port open', port: port)
           end
+        rescue Errno::ECONNREFUSED, Errno::ETIMEDOUT, SocketError
+          # closed or filtered
         end
       end
-      threads.each(&:join)
+      pool.shutdown
+      pool.wait_for_termination
     end
 
     # 支持多种端口参数格式: 22,80,443 或 1..1024
