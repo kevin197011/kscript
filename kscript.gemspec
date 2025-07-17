@@ -37,16 +37,18 @@ Gem::Specification.new do |spec|
   spec.extensions    = ['ext/mkrf_conf.rb']
 
   # Runtime dependencies
-  spec.add_dependency 'aws-sdk-s3', '~> 1.130'
-  spec.add_dependency 'bcrypt', '>= 3.1', '< 4.0'
-  spec.add_dependency 'dotenv', '~> 3.0'
-  spec.add_dependency 'httpx', '~> 1.5'
-  spec.add_dependency 'nokogiri', '>= 1.13', '< 2.0'
-  spec.add_dependency 'rake', '~> 13.0'
-  spec.add_dependency 'thor', '1.3.2'
+  spec.add_dependency 'aws-sdk-s3'
+  spec.add_dependency 'dotenv'
+  spec.add_dependency 'httpx'
+  spec.add_dependency 'nokogiri'
+  spec.add_dependency 'parallel'
+  spec.add_dependency 'rake'
+  spec.add_dependency 'thor'
+  spec.add_dependency 'tty-prompt'
+  # Ruby 标准库和系统自带的无需声明
 
   # Development dependencies
-  spec.add_development_dependency 'rubocop', '~> 1.21'
+  spec.add_development_dependency 'rubocop'
 
   # Post install message
   spec.post_install_message = <<~MESSAGE
