@@ -68,7 +68,7 @@ module Kscript
       # Ensure .gitignore contains .cursor
       if File.exist?('.gitignore') && File.readlines('.gitignore').none? { |l| l.strip == '.cursor' }
         logger.kinfo('Adding .cursor to .gitignore...')
-        File.open('.gitignore', 'a') { |f| f.puts '\n.cursor' }
+        File.open('.gitignore', 'a') { |f| f.puts "\n.cursor" }
       end
 
       logger.kinfo("\n✅ Cursor rules deploy completed!")
