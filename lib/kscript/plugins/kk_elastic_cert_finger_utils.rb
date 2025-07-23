@@ -17,11 +17,13 @@ module Kscript
     # @param cert_path [String] path to the certificate file
     def initialize(*args, **opts)
       super
-      @cert_path = opts[:cert_path] || self.class::DEFAULT_CERT_PATH
+      @cert_path = args[0] || opts[:cert_path] || self.class::DEFAULT_CERT_PATH
     end
 
-    def run
+    def run(*args, **_opts)
       with_error_handling do
+        # 支持运行时传入证书路径覆盖初始化时的路径
+        @cert_path = args[0] if args[0]
         generate
       end
     end
